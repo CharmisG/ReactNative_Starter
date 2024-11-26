@@ -14,13 +14,13 @@ import Colors from '../styles/Colors';
 import {useEffect, useState} from 'react';
 import DropdownModel from '../models/DropdownModel';
 import i18n from '../Localization/Localize';
-import globalConfig from '../utils/globalConfig';
 import Translate from '../hooks/Translate';
 import {fontHeight, fontWidth} from '../styles/Fonts';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../redux/store';
 import {setAppTheme} from '../redux/slices/SettingsSlice';
-import AppConstants from '../constants/AppConstants';
+import {AppConstants} from '../constants/AppConstants';
+import {LogEvent} from '../utils/EventLogger';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
@@ -53,6 +53,10 @@ const SettingsScreen = ({navigation}: Props) => {
   useEffect(() => {
     dispatch(setAppTheme(darkTheme ? AppConstants.dark : AppConstants.light));
   }, [darkTheme]);
+
+  useEffect(() => {
+    LogEvent('Settings', 'On Start', true);
+  }, []);
 
   return (
     <MainView
