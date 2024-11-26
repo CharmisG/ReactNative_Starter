@@ -1,7 +1,14 @@
+import { Events } from "../constants/EventConstants";
 
-export const LogEvent = (eventName: string, screenName: string, printToConsole: boolean) => {
-    // Implement External Logger(s)
-    if(printToConsole){
-        console.log(`Event - Event: ${eventName}, Screen: ${screenName}`);
-    }
-}
+export const LogEvent = (options: {
+  eventName: Events;
+  screenName: string;
+  printToConsole: boolean;
+}) => {
+  // Implement External Logger(s)
+  if (options.printToConsole) {
+    console.log(
+      `EVENTLOG - Event: ${options.eventName?.toString()}, Screen: ${options.screenName}`,
+    );
+  }
+};

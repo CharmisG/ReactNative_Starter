@@ -21,6 +21,7 @@ import {AppDispatch, RootState} from '../redux/store';
 import {setAppTheme} from '../redux/slices/SettingsSlice';
 import {AppConstants} from '../constants/AppConstants';
 import {LogEvent} from '../utils/EventLogger';
+import { Events } from '../constants/EventConstants';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
@@ -55,7 +56,11 @@ const SettingsScreen = ({navigation}: Props) => {
   }, [darkTheme]);
 
   useEffect(() => {
-    LogEvent('Settings', 'On Start', true);
+    LogEvent({
+      screenName: 'Settings',
+      eventName: Events.ScreenStarting,
+      printToConsole: true,
+    });
   }, []);
 
   return (
