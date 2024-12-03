@@ -12,9 +12,11 @@ import * as RNLocalize from 'react-native-localize';
 import MainStackNavigator from './src/navigation/MainStackNavigator';
 import {Provider} from 'react-redux';
 import { Store } from './src/redux/Store';
+import SplashScreen from 'react-native-splash-screen';
 
 function App(): React.JSX.Element {
   useEffect(() => {
+    SplashScreen.hide();
     const locale = RNLocalize.getLocales()[0].languageCode;
     i18n.changeLanguage(locale);
     LogBox.ignoreAllLogs();

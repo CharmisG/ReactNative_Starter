@@ -4,6 +4,7 @@ import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
+mport org.devio.rn.splashscreen.SplashScreen
 
 class MainActivity : ReactActivity() {
 
@@ -12,6 +13,11 @@ class MainActivity : ReactActivity() {
    * rendering of the component.
    */
   override fun getMainComponentName(): String = "ProjectName"
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+        SplashScreen.show(this);  // add this
+        super.onCreate(null)
+    }
 
   /**
    * Returns the instance of the [ReactActivityDelegate]. We use [DefaultReactActivityDelegate]
