@@ -5,6 +5,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import { Image, Platform } from 'react-native';
 import Images from '../utils/Images';
 import Colors from '../styles/Colors';
+import GraphCallTestScreen from '../screens/GraphCallTestScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -38,6 +39,18 @@ export default function MainTabNavigator() {
           ),
         }}/>
       <Tab.Screen name="Profile" component={ProfileScreen} options={{
+          tabBarIcon: ({focused, color, size}) => (
+            <Image
+              source={Images.profile}
+              style={{
+                height: 24,
+                width: 24,
+                tintColor: focused ? Colors.primary : Colors.charcoal,
+              }}
+            />
+          ),
+        }}/>
+        <Tab.Screen name="Graph Test" component={GraphCallTestScreen} options={{
           tabBarIcon: ({focused, color, size}) => (
             <Image
               source={Images.profile}

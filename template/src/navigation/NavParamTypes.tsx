@@ -5,4 +5,5 @@ export type RootStackParamList = {
     ScreenThree: undefined;
     Settings: undefined;
     ProfileScreen: undefined;
+    GraphCallTestScreen: undefined;
 }
