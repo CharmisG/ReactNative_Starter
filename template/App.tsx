@@ -11,8 +11,9 @@ import i18n from './src/Localization/Localize';
 import * as RNLocalize from 'react-native-localize';
 import MainStackNavigator from './src/navigation/MainStackNavigator';
 import {Provider} from 'react-redux';
-import { Store } from './src/redux/Store';
+import {Store} from './src/redux/Store';
 import SplashScreen from 'react-native-splash-screen';
+import {Init} from './src/services/InitService';
 
 function App(): React.JSX.Element {
   useEffect(() => {
@@ -20,7 +21,12 @@ function App(): React.JSX.Element {
     const locale = RNLocalize.getLocales()[0].languageCode;
     i18n.changeLanguage(locale);
     LogBox.ignoreAllLogs();
+    InitOperations();
   }, []);
+
+  async function InitOperations() {
+    Init();
+  }
 
   return (
     <Provider store={Store}>
