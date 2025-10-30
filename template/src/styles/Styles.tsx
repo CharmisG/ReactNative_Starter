@@ -13,13 +13,14 @@ const Styles = StyleSheet.create({
   },
   navBarTitle: {
     color: Colors.white,
-    fontSize: fontHeight.FONT14,
+    fontSize: fontHeight.FONT15,
     textAlign: 'center',
   },
   navBarIcon: {
     color: Colors.white,
-    height: 24,
-    width: 24,
+    height: 18,
+    width: 18,
+    margin : 8
   },
   mainViewContainer: {
     backgroundColor: Colors.white,

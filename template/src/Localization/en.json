@@ -9,6 +9,23 @@
     "English": "English",
     "Change Appearance": "Change Appearance",
     "Dark": "Dark",
-    "Light": "Light"
+    "Light": "Light",
+    "Filebase Logging": "Filebase Logging",
+    "Show file paths": "Show file paths",
+    "Sample List": "Sample List",
+    "Logout": "Logout",
+    "Profile Screen": "Profile Screen",
+    "This is the Profile Screen": "This is the Profile Screen",
+    "Screen Two": "Screen Two",
+    "This is Screen Two": "This is Screen Two",
+    "Start Scan": "Start Scan",
+    "Stop scan": "Stop scan",
+    "Connect": "Connect",
+    "Navigate": "Navigate",
+    "Screen Three": "Screen Three",
+    "This is screen three with view enclosed in Main View": "This is screen three with view enclosed in Main View",
+    "You want to open screen ?": "You want to open screen ?",
+    "Open": "Open",
+    "Cancel": "Cancel"
   }
 }

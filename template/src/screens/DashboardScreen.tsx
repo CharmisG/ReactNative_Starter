@@ -11,38 +11,44 @@ import {
   Modal,
   Platform,
   FlatList,
+  Alert,
 } from 'react-native';
-import {NativeStackScreenProps} from 'react-native-screens/lib/typescript/native-stack/types';
-import {RootStackParamList} from '../navigation/NavParamTypes';
+import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
+import { RootStackParamList } from '../navigation/NavParamTypes';
 import Translate from '../hooks/Translate';
 import Colors from '../styles/Colors';
-import {fontHeight} from '../styles/Fonts';
-import {useEffect, useRef, useState} from 'react';
+import { fontHeight } from '../styles/Fonts';
+import { useEffect, useRef, useState } from 'react';
 import Images from '../utils/Images';
-import {useDispatch, useSelector} from 'react-redux';
-import {HomeSliceActions} from '../redux/slices/HomeSlice';
-import {AppDispatch, RootState} from '../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { HomeSliceActions } from '../redux/slices/HomeSlice';
+import { AppDispatch, RootState } from '../redux/store';
+import { AppConstants } from '../constants/AppConstants';
+import { windowHeight, windowWidth } from '../styles/Dimens';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Dashboard'>;
 
-const DashboardScreen: React.FC<Props> = ({navigation}) => {
+const DashboardScreen: React.FC<Props> = ({ navigation }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const {sampleData} = useSelector((state: RootState) => state.Home);
+  const { sampleData } = useSelector((state: RootState) => state.Home);
   const [visible, setVisible] = useState(false);
   const scale = useRef(new Animated.Value(0)).current;
+  const [modalVisible, setModalVisible] = useState(false);
+
   const options = [
     {
-      title: 'Settings',
+      title: Translate('Settings'),
       icon: Images.settings,
       action: () => {
         navigation.navigate('Settings');
       },
     },
     {
-      title: 'Logout',
+      title: Translate('Logout'),
       icon: Images.logout,
     },
   ];
+  const { appTheme } = useSelector((state: RootState) => state.Settings);
 
   function resizeBox(to: number) {
     to === 1 && setVisible(true);
@@ -59,7 +65,7 @@ const DashboardScreen: React.FC<Props> = ({navigation}) => {
   }, []);
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <SafeAreaView style={styles.topHalf}>
         <Pressable onPress={() => resizeBox(1)}>
           <Image
@@ -75,19 +81,23 @@ const DashboardScreen: React.FC<Props> = ({navigation}) => {
         </Pressable>
         <Modal transparent visible={visible}>
           <SafeAreaView
-            style={{flex: 1, backgroundColor: 'transparent'}}
+            style={{ flex: 1, backgroundColor: 'transparent' }}
             onTouchStart={() => resizeBox(0)}>
             <Animated.View
               style={[
                 styles.popup,
                 {
+                  backgroundColor:
+                    appTheme === AppConstants.dark
+                      ? Colors.black
+                      : Colors.white,
                   opacity: scale.interpolate({
                     inputRange: [0, 1],
                     outputRange: [0, 1],
                   }),
                 },
                 {
-                  transform: [{scale: scale}],
+                  transform: [{ scale: scale }],
                 },
               ]}>
               {options.map((op, i) => (
@@ -102,6 +112,9 @@ const DashboardScreen: React.FC<Props> = ({navigation}) => {
                     <Image
                       source={op.icon}
                       style={{
+                        tintColor: appTheme === AppConstants.dark
+                          ? Colors.white
+                          : Colors.black,
                         height: 24,
                         width: 24,
                         marginLeft: 10,
@@ -112,7 +125,10 @@ const DashboardScreen: React.FC<Props> = ({navigation}) => {
                       style={{
                         marginVertical: 8,
                         fontSize: 16,
-                        color: Colors.black,
+                        color:
+                          appTheme === AppConstants.dark
+                            ? Colors.white
+                            : Colors.black,
                       }}>
                       {op.title}
                     </Text>
@@ -123,28 +139,38 @@ const DashboardScreen: React.FC<Props> = ({navigation}) => {
           </SafeAreaView>
         </Modal>
 
-        <View style={{flex: 1, justifyContent: 'center'}}>
+        <View style={{ flex: 1, justifyContent: 'center' }}>
           <Text
             style={{
               textAlignVertical: 'center',
               textAlign: 'center',
               fontSize: fontHeight.FONT24,
-              color: Colors.white,
+              color:
+                appTheme === AppConstants.dark ? Colors.black : Colors.white,
             }}>
             {Translate('Hello')}
           </Text>
         </View>
       </SafeAreaView>
-      <View style={styles.bottomHalf}>
-        <View style={{padding: 10}}>
-          <Text style={styles.itemTextColor}>Sample List</Text>
+      <View
+        style={[
+          styles.bottomHalf,
+          {
+            backgroundColor:
+              appTheme === AppConstants.dark ? Colors.black : Colors.white,
+          },
+        ]}>
+        <View style={{ padding: 10 }}>
+          <Text style={styles.itemTextColor}>{Translate('Sample List')}</Text>
         </View>
         <FlatList
           data={sampleData}
           keyExtractor={item => item.id}
-          renderItem={({item}) => (
-            <Pressable onPress={() => navigation.navigate('ScreenTwo')}>
+          renderItem={({ item }) => (
+            // <Pressable onPress={() => navigation.navigate('ScreenTwo')}>
+            <Pressable onPress={() => setModalVisible(true)}>
               <Item
+                appTheme={appTheme}
                 title={item.title}
                 completed={item.completed}
                 id={item.id}
@@ -152,14 +178,50 @@ const DashboardScreen: React.FC<Props> = ({navigation}) => {
             </Pressable>
           )}
         />
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>{Translate('You want to open screen ?')}</Text>
+              <View style={{ flexDirection: 'row' }}>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => {
+                    setModalVisible(!modalVisible)
+                    navigation.navigate('ScreenTwo')
+                  }
+                  }>
+                  <Text style={styles.textStyle}>{Translate('Open')}</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalVisible(!modalVisible)}>
+                  <Text style={styles.textStyle}>{Translate('Cancel')}</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     </View>
   );
 };
-type ItemProps = {title: string; completed: boolean; id: number};
+type ItemProps = { appTheme: any; title: string; completed: boolean; id: number };
 
-const Item = ({title, completed, id}: ItemProps) => (
-  <View style={styles.item}>
+const Item = ({ appTheme, title, completed, id }: ItemProps) => (
+  <View
+    style={[
+      styles.item,
+      {
+        backgroundColor:
+          appTheme === AppConstants.dark ? Colors.black : Colors.white,
+      },
+    ]}>
     <Text style={styles.itemTextColor}>{id}</Text>
     <Text style={styles.itemTextColor}>{title}</Text>
     <Text style={styles.itemTextColor}>{completed?.toString()}</Text>
@@ -184,20 +246,20 @@ const styles = StyleSheet.create({
     shadowColor: Colors.primary,
     shadowOpacity: 0.8,
     shadowRadius: 4,
-    backgroundColor: '#fff',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
+    backgroundColor: Colors.white,
+    paddingHorizontal: windowWidth(10),
+    paddingVertical: windowHeight(10),
     position: 'absolute',
     width: undefined,
-    top: Platform.OS === 'ios' ? 80 : 30,
-    left: 20,
+    top: Platform.OS === 'ios' ? windowHeight(80) : windowHeight(30),
+    left: windowWidth(20),
     justifyContent: 'flex-start',
   },
   item: {
     backgroundColor: Colors.white,
     padding: 6,
-    marginVertical: 8,
-    marginHorizontal: 10,
+    marginVertical: windowHeight(8),
+    marginHorizontal: windowWidth(10),
     borderRadius: 2,
     shadowColor: Colors.grey,
     shadowOpacity: 0.3,
@@ -207,5 +269,44 @@ const styles = StyleSheet.create({
   itemTextColor: {
     color: 'grey',
     fontSize: fontHeight.FONT14,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: Colors.black,
+    shadowOffset: {
+      width: windowWidth(0),
+      height: windowHeight(2),
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2,
+    margin: 8
+  },
+  buttonClose: {
+    backgroundColor: Colors.primary,
+  },
+  textStyle: {
+    color: Colors.white,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    fontSize: fontHeight.FONT18,
+    margin: 15,
+    textAlign: 'center',
   },
 });

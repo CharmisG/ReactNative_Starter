@@ -20,6 +20,7 @@ export async function getData(url: string, authToken: string) {
     response = await axiosInstance.get(url);
     apiLogModel.status = response.status;
     apiLogModel.data = response.data;
+    
   } catch (error) {
     apiLogModel.error = error;
   } finally {
