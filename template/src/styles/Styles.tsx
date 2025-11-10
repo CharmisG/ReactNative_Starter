@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 import Colors from './Colors';
-import {fontHeights} from './Fonts';
+import {fontHeight} from './Fonts';
 
 const Styles = StyleSheet.create({
   mainNavbar: {
@@ -13,13 +13,14 @@ const Styles = StyleSheet.create({
   },
   navBarTitle: {
     color: Colors.white,
-    fontSize: fontHeights.FONT14,
+    fontSize: fontHeight.FONT15,
     textAlign: 'center',
   },
   navBarIcon: {
     color: Colors.white,
-    height: 24,
-    width: 24,
+    height: 18,
+    width: 18,
+    margin : 8
   },
   mainViewContainer: {
     backgroundColor: Colors.white,

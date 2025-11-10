@@ -5,7 +5,7 @@ import MainTabNavigator from './MainTabNavigator';
 const Drawer = createDrawerNavigator();
 
 /**
- * 
+ * UNUSED
  * @returns Screens part of side drawer menu
  */
 export default function MainDrawerNavigator() {

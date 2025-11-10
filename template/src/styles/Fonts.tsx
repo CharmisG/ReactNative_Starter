@@ -1,6 +1,6 @@
 import {windowWidth, windowHeight} from './Dimens';
 
-export const fontWidths = {
+export const fontWidth = {
   FONT6: windowWidth(6),
   FONT7: windowWidth(7),
   FONT8: windowWidth(8),
@@ -37,7 +37,7 @@ export const fontWidths = {
   FONT64: windowWidth(64),
 };
 
-export const fontHeights = {
+export const fontHeight = {
   FONT6: windowHeight(6),
   FONT7: windowHeight(7),
   FONT8: windowHeight(8),

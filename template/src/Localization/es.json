@@ -1,0 +1,31 @@
+{
+  "translation": {
+    "Hello": "Hola!",
+    "Home": "Hogar",
+    "Settings": "Ajustes",
+    "Dashboard": "Panel",
+    "Profile": "Perfil",
+    "Change Language": "Cambiar idioma",
+    "English": "Ingles",
+    "Change Appearance": "Cambiar apariencia",
+    "Dark": "Oscuro",
+    "Light": "Ligero",
+    "Filebase Logging": "Registro de base de archivos",
+    "Show file paths": "Mostrar rutas de archivos",
+    "Sample List": "Lista de muestra",
+    "Logout": "Cerrar sesión",
+    "Profile Screen": "Pantalla de perfil",
+    "This is the Profile Screen": "Esta es la pantalla de perfil",
+    "Screen Two": "Pantalla dos",
+    "This is Screen Two": "Esta es la pantalla dos",
+    "Start Scan": "Iniciar escaneo",
+    "Stop scan": "Detener escaneo",
+    "Connect": "Conectar",
+    "Navigate": "Navegar por",
+    "Screen Three": "Pantalla tres",
+    "This is screen three with view enclosed in Main View": "Esta es la pantalla tres con la vista incluida en la Vista principal",
+    "You want to open screen ?": "¿Quieres abrir la pantalla?",
+    "Open": "Abierta",
+    "Cancel": "Cancelar"
+  }
+}

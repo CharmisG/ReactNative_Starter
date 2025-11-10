@@ -2,7 +2,7 @@ import {Platform, SafeAreaView, StatusBar, View} from 'react-native';
 import Navbar from './Navbar';
 import Colors from '../styles/Colors';
 
-export type MainViewProps = {
+type MainViewProps = {
   children?: any;
   leftIconVisible?: Boolean;
   leftIconPressed?: any;
