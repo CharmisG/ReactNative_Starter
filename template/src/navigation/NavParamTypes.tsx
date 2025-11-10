@@ -4,5 +4,6 @@ export type RootStackParamList = {
     ScreenTwo: undefined;
     ScreenThree: undefined;
     Settings: undefined;
+    TextEditor: undefined;
     ProfileScreen: undefined;
 }

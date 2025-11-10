@@ -12,8 +12,12 @@ import * as RNLocalize from 'react-native-localize';
 import MainStackNavigator from './src/navigation/MainStackNavigator';
 import { Provider } from 'react-redux';
 import { Store } from './src/redux/Store';
-import SplashScreen from 'react-native-splash-screen';
 import { FileLogger, LogLevel } from "react-native-file-logger";
+import analytics from '@react-native-firebase/analytics';
+import { firebase } from '@react-native-firebase/analytics';
+import { GoogleSigninSampleApp } from './src/components/socialLogin/googleLogin';
+import { FacebookSignIn } from './src/components/socialLogin/facebookLogin';
+
 
 function App(): React.JSX.Element {
 	useEffect(() => {
@@ -24,11 +28,25 @@ function App(): React.JSX.Element {
 		FileLogger.configure({ logLevel: LogLevel.Debug, maximumFileSize: 1024 }).then(() =>
 			console.log("File-logger configured")
 		);
+		// analyticsTest();
 	}, []);
+
+	const analyticsTest = async () => {
+		firebase.analytics().setUserId('user123');
+		await analytics().logEvent('test_event', {
+			id: 123456,
+			item: 'Test Item',
+			description: ['This is a test event'],
+			size: 'M',
+		});
+		Alert.alert('Analytics Event Logged', 'A test analytics event has been logged.');
+	}
 
 	return (
 		<Provider store={Store}>
-			<MainStackNavigator />
+			<GoogleSigninSampleApp />
+			<FacebookSignIn />
+			{/* <MainStackNavigator /> */}
 		</Provider>
 	);
 }

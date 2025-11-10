@@ -25,6 +25,7 @@ import { HomeSliceActions } from '../redux/slices/HomeSlice';
 import { AppDispatch, RootState } from '../redux/store';
 import { AppConstants } from '../constants/AppConstants';
 import { windowHeight, windowWidth } from '../styles/Dimens';
+import analytics from '@react-native-firebase/analytics';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Dashboard'>;
 
@@ -40,7 +41,15 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
       title: Translate('Settings'),
       icon: Images.settings,
       action: () => {
+        analyticsTest();
         navigation.navigate('Settings');
+      },
+    },
+    {
+      title: Translate('TextEditor'),
+      icon: Images.settings,
+      action: () => {
+        navigation.navigate('TextEditor');
       },
     },
     {
@@ -48,6 +57,14 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
       icon: Images.logout,
     },
   ];
+
+  const analyticsTest = async () => {
+    await analytics().logScreenView({
+      screen_name: "Settings",
+      screen_class: "Settings",
+    });
+  }
+
   const { appTheme } = useSelector((state: RootState) => state.Settings);
 
   function resizeBox(to: number) {
