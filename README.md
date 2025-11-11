@@ -55,28 +55,6 @@ Now that you have successfully run the app, let's modify it.
 
    For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
 
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
 
 ## Login with Google using Firebase Authentication:
 
@@ -89,29 +67,43 @@ Enable Google as a provider.
 
 2. Add Firebase to Your React Native App
 
-- Install dependencies
+### Install dependencies
+
+   ```bash
    npm install @react-native-firebase/app @react-native-firebase/auth
    npm install @react-native-google-signin/google-signin
+   ```
 
 🔹 Android setup
 
 1) In Firebase Console → Project Settings → Android app, register your app (e.g. com.example.myapp).
+
 2) Download google-services.json and place it in:
    android/app/google-services.json
 
 3) Add Firebase plugin to your android/build.gradle:
+
+   ```bash
    buildscript {
       dependencies {
          classpath 'com.google.gms:google-services:4.4.2'
       }
    }
+   ```
 
 4) Apply the plugin at the bottom of android/app/build.gradle:
+
+```bash
    apply plugin: 'com.google.gms.google-services'
+   ```
 
 5) Add your SHA-1 and SHA-256 keys in Firebase → Project Settings → Android App.
-- To get them, run:
+
+### To get them, run:
+
+```bash
    cd android && ./gradlew signingReport
+   ```
 
 🔹 For iOS:
 
@@ -120,14 +112,16 @@ Enable Google as a provider.
 2) Download GoogleService-Info.plist and add it to your Xcode project.
 
 3) Run:
+```bash
    cd ios && pod install
+```
 
 4) Configure URL types in Xcode:
 - Open your project in Xcode.
 - Select your app target → Info → URL Types.
 - Add a new URL type with the value from REVERSED_CLIENT_ID in GoogleService-Info.plist.
 
-💻 Implementation
+## 💻 Implementation
 - working example using Firebase Authentication with Google Sign-In is in :
    src/components/socialLogin/googleLogin.tsx
 
@@ -152,8 +146,12 @@ Enable Google as a provider.
 - Copy the App ID and App Secret and paste them into Firebase Authentication → Facebook Provider Settings.
 
 3. Add Firebase and Facebook SDKs to React Native
-- Install Dependencies
+
+### Install Dependencies
+
+```bash
    npm install @react-native-firebase/app @react-native-firebase/auth react-native-fbsdk-next
+```
 
 🔹 Android Setup
 
@@ -162,33 +160,47 @@ Enable Google as a provider.
 - Download google-services.json and put it inside:
    android/app/google-services.json
 
-- Add Firebase plugin to your android/build.gradle:
+### Add Firebase plugin to your android/build.gradle:
+
+   ```bash
    buildscript {
       dependencies {
-         classpath 'com.google.gms:google-services:4.4.2'
-      }
+      classpath 'com.google.gms:google-services:4.4.2'
+       }
    }
+   ```
 
-- Apply plugin at the bottom of android/app/build.gradle:
+### Apply plugin at the bottom of android/app/build.gradle:
    apply plugin: 'com.google.gms.google-services'
 
-- Add your Facebook App ID and client token in android/app/src/main/AndroidManifest.xml:
+### Add your Facebook App ID and client token in android/app/src/main/AndroidManifest.xml:
+
+ ```bash
+
    <application>
       <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
       <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
    </application>
 
-- Add these values to android/app/src/main/res/values/strings.xml:
+```
+
+### Add these values to android/app/src/main/res/values/strings.xml:
+
+```bash
    <string name="facebook_app_id">YOUR_FACEBOOK_APP_ID</string>
    <string name="facebook_client_token">YOUR_FACEBOOK_CLIENT_TOKEN</string>
+```
 
 🔹 iOS Setup
 
 1) In Firebase Console → Project Settings → iOS app, register your bundle ID.
 2) Download GoogleService-Info.plist and add it to your Xcode project.
 3) Install CocoaPods:
-   cd ios && pod install
+   ```bash
+      cd ios && pod install
+   ```
 4) Configure Facebook:
+```bash
    Add your Facebook App ID and Display Name to Info.plist:
    <key>FacebookAppID</key>
    <string>YOUR_FACEBOOK_APP_ID</string>
@@ -218,8 +230,85 @@ Enable Google as a provider.
          </array>
       </dict>
    </array>
+```
 
-💻 Implementation
+ ### 💻 Implementation
 - working example using Firebase Authentication with Facebook Sign-In is in :
    src/components/socialLogin/facebookLogin.tsx
 
+## Once you’ve obtained an access token from a social login (e.g., Google, Facebook, Apple, etc.) in a mobile app, the next steps are critical to properly authenticate the user and integrate them into your backend system securely.
+
+Here’s a step-by-step guide on what to do next 👇
+
+## 1. Send the Access Token to Your Backend
+
+Why: The access token should not be trusted directly by the client app for authentication with your own backend.
+
+How:
+
+### Make a secure HTTPS POST request to your backend API endpoint, e.g.:
+
+```bash
+POST /api/auth/social-login
+{
+  "provider": "google",
+  "access_token": "<SOCIAL_ACCESS_TOKEN>"
+}
+```
+
+- Include necessary metadata (e.g., app version, device info if needed).
+
+## 2. Verify the Token on the Server
+
+Your backend must validate the access token with the social provider (Google, Facebook, etc.) to ensure it’s legitimate.
+
+Example:
+
+### For Google, call
+```bash
+https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=<token>
+```
+
+### For Facebook, call
+```bash
+https://graph.facebook.com/debug_token?input_token=<token>&access_token=<app_access_token>
+```
+
+- For Apple, verify the JWT signature using Apple’s public keys.
+- Extract the user ID, email, and name from the verified payload. 
+
+## 👤 3. Create or Fetch a Local User Account
+
+- Check if a user with that social account already exists in your database.
+
+If not:
+
+Create a new user record with their social ID, name, and email.
+
+If yes:
+
+Fetch the existing user record.
+
+
+## Congratulations! :tada:
+
+You've successfully run and modified your React Native App. :partying_face:
+
+### Now what?
+
+- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
+- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+
+# Troubleshooting
+
+If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+
+# Learn More
+
+To learn more about React Native, take a look at the following resources:
+
+- [React Native Website](https://reactnative.dev) - learn more about React Native.
+- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
+- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
+- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
+- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
