@@ -58,7 +58,7 @@ Now that you have successfully run the app, let's modify it.
 
 ## Login with Google using Firebase Authentication:
 
-⚙️ Setup Guide
+### ⚙️ Setup Guide
 1. Create a Firebase Project
 Go to the [Firebase Console]((https://console.firebase.google.com/))
 Click Add Project and follow the steps.
@@ -67,14 +67,14 @@ Enable Google as a provider.
 
 2. Add Firebase to Your React Native App
 
-### Install dependencies
+- Install dependencies
 
    ```bash
    npm install @react-native-firebase/app @react-native-firebase/auth
    npm install @react-native-google-signin/google-signin
    ```
 
-🔹 Android setup
+### 🔹 Android setup
 
 1) In Firebase Console → Project Settings → Android app, register your app (e.g. com.example.myapp).
 
@@ -98,14 +98,13 @@ Enable Google as a provider.
    ```
 
 5) Add your SHA-1 and SHA-256 keys in Firebase → Project Settings → Android App.
-
-### To get them, run:
+- To get them, run:
 
 ```bash
    cd android && ./gradlew signingReport
    ```
 
-🔹 For iOS:
+### 🔹 For iOS:
 
 1) In Firebase Console → Project Settings → iOS app, register your iOS bundle ID (e.g. com.example.myapp).
 
@@ -127,7 +126,7 @@ Enable Google as a provider.
 
 ## Login with Facebook using Firebase Authentication:
 
-⚙️ Setup Guide
+### ⚙️ Setup Guide
 1. Create a Firebase Project
 
 - Go to the [Firebase Console]((https://console.firebase.google.com/))
@@ -147,20 +146,20 @@ Enable Google as a provider.
 
 3. Add Firebase and Facebook SDKs to React Native
 
-### Install Dependencies
+- Install Dependencies
 
 ```bash
    npm install @react-native-firebase/app @react-native-firebase/auth react-native-fbsdk-next
 ```
 
-🔹 Android Setup
+### 🔹 Android Setup
 
 - In Firebase Console → Project Settings → Android, register your Android package name (e.g. com.example.myapp).
 
 - Download google-services.json and put it inside:
    android/app/google-services.json
 
-### Add Firebase plugin to your android/build.gradle:
+- Add Firebase plugin to your android/build.gradle:
 
    ```bash
    buildscript {
@@ -170,10 +169,10 @@ Enable Google as a provider.
    }
    ```
 
-### Apply plugin at the bottom of android/app/build.gradle:
+- Apply plugin at the bottom of android/app/build.gradle:
    apply plugin: 'com.google.gms.google-services'
 
-### Add your Facebook App ID and client token in android/app/src/main/AndroidManifest.xml:
+- Add your Facebook App ID and client token in android/app/src/main/AndroidManifest.xml:
 
  ```bash
 
@@ -184,14 +183,14 @@ Enable Google as a provider.
 
 ```
 
-### Add these values to android/app/src/main/res/values/strings.xml:
+- Add these values to android/app/src/main/res/values/strings.xml:
 
 ```bash
    <string name="facebook_app_id">YOUR_FACEBOOK_APP_ID</string>
    <string name="facebook_client_token">YOUR_FACEBOOK_CLIENT_TOKEN</string>
 ```
 
-🔹 iOS Setup
+### 🔹 iOS Setup
 
 1) In Firebase Console → Project Settings → iOS app, register your bundle ID.
 2) Download GoogleService-Info.plist and add it to your Xcode project.
@@ -246,7 +245,7 @@ Why: The access token should not be trusted directly by the client app for authe
 
 How:
 
-### Make a secure HTTPS POST request to your backend API endpoint, e.g.:
+- Make a secure HTTPS POST request to your backend API endpoint, e.g.:
 
 ```bash
 POST /api/auth/social-login
@@ -264,12 +263,12 @@ Your backend must validate the access token with the social provider (Google, Fa
 
 Example:
 
-### For Google, call
+- For Google, call
 ```bash
 https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=<token>
 ```
 
-### For Facebook, call
+- For Facebook, call
 ```bash
 https://graph.facebook.com/debug_token?input_token=<token>&access_token=<app_access_token>
 ```
