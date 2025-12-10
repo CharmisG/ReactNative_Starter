@@ -4,6 +4,8 @@ import {
   Switch,
   StyleSheet,
   Alert,
+  Button,
+  Pressable,
 } from 'react-native';
 import MainView from '../components/MainView';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -22,6 +24,10 @@ import { AppConstants } from '../constants/AppConstants';
 import { LogEvent } from '../utils/EventLogger';
 import { Events } from '../constants/EventConstants';
 import { FileLogger, LogLevel } from "react-native-file-logger";
+import { windowHeight, windowWidth } from '../styles/Dimens';
+import { getCrashlytics, setUserId as setCrashlyticsUserId, crash, recordError, log as crashlyticsLog } from '@react-native-firebase/crashlytics';
+import { showToast } from '../contexts/ToastContext';
+import { getAnalytics, logEvent, setUserId as setAnalyticsUserId } from '@react-native-firebase/analytics';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
@@ -29,6 +35,8 @@ const SettingsScreen = ({ navigation }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const { appTheme } = useSelector((state: RootState) => state.Settings);
   const [enabled, setEnabled] = useState(true);
+  const crashlyticsInstance = getCrashlytics();
+  const analyticsInstance = getAnalytics();
 
   const [selectedLanguage, setSelectedLanguage] = useState(
     global.appLanguage ?? 'en',
@@ -38,8 +46,8 @@ const SettingsScreen = ({ navigation }: Props) => {
   );
 
   const settingsList: any = [
-    new DropdownModel('English', 'en'),
-    new DropdownModel('Espanol', 'es'),
+    new DropdownModel(Translate('English'), 'en'),
+    new DropdownModel(Translate('Spanish'), 'es'),
   ];
 
   function onLanguageChanged(val: string) {
@@ -67,6 +75,35 @@ const SettingsScreen = ({ navigation }: Props) => {
     });
   }, []);
 
+
+  const onCrashlyticsTest = async () => {
+    try {
+      await setCrashlyticsUserId(crashlyticsInstance, 'user-123');
+    } catch (e) {
+      console.warn('Crashlytics record failed', e);
+    }
+    if (__DEV__) {
+      showToast({ text: 'Crash is disabled in debug run a release build to test.' });
+      return;
+    }
+    await crash(crashlyticsInstance);
+  };
+
+  const onAnalyticsTest = async () => {
+    await setAnalyticsUserId(analyticsInstance, 'user123');
+    await logEvent(analyticsInstance, 'test_event', {
+      id: 123456,
+      item: 'Test Item',
+      description: ['This is a test event'],
+      size: 'M',
+    });
+    showToast({ text: 'A test analytics event has been logged.' });
+  }
+
+  const onShowToast = () => {
+    showToast({ text: 'This is a test toast', type: 'success' });
+  };
+
   const changeEnabled = (value: boolean) => {
     if (value) {
       FileLogger.enableConsoleCapture();
@@ -77,115 +114,232 @@ const SettingsScreen = ({ navigation }: Props) => {
   };
 
   const showLogFilePaths = async () => {
-    Alert.alert("File paths", (await FileLogger.getLogFilePaths()).join("\n"));
+    Alert.alert(Translate('Show file paths'), (await FileLogger.getLogFilePaths()).join("\n"));
   };
 
   return (
     <MainView
       screenTitle={Translate('Settings')}
-      leftIconPressed={() => navigation.goBack()}>
-      <View style={{ flex: 1, padding: 20, backgroundColor: appTheme === AppConstants.dark ? Colors.black : Colors.white }}>
-        <Text style={styles.titleStyle}>{Translate('Change Language')}</Text>
-        <Dropdown
-          data={settingsList}
-          style={styles.dropdown}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          inputSearchStyle={styles.inputSearchStyle}
-          iconStyle={styles.iconStyle}
-          itemTextStyle={{ color: Colors.black }}
-          maxHeight={300}
-          labelField="name"
-          valueField="value"
-          placeholder={'Select Language'}
-          value={selectedLanguage}
-          onChange={item => {
-            onLanguageChanged(item.value);
-          }}
-        />
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginVertical: 10,
-          }}>
-          <View>
-            <Text style={styles.titleStyle}>
-              {Translate('Change Appearance')}
-            </Text>
-            <View style={{ marginTop: 4 }}>
-              {darkTheme && (
-                <Text style={styles.subTitleStyle}>{Translate('Dark')}</Text>
-              )}
-              {!darkTheme && (
-                <Text style={styles.subTitleStyle}>{Translate('Light')}</Text>
-              )}
-            </View>
-          </View>
-          <Switch
-            value={darkTheme}
-            onChange={() => {
-              toggleSwitch();
-            }}
+      leftIconPressed={() => navigation.goBack()}
+    >
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: appTheme === AppConstants.dark ? Colors.black : Colors.white }
+        ]}
+      >
+
+        {/* 🌐 Language */}
+        <View style={[styles.card, { backgroundColor: appTheme === AppConstants.dark ? Colors.grey : Colors.white }]}>
+          <Text style={styles.cardTitle}>{Translate('Change Language')}</Text>
+
+          <Dropdown
+            data={settingsList}
+            style={styles.dropdown}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            iconStyle={styles.iconStyle}
+            labelField="name"
+            valueField="value"
+            placeholder={Translate('Select Language')}
+            value={selectedLanguage}
+            onChange={item => onLanguageChanged(item.value)}
           />
         </View>
-        <View style={styles.settingsRow}>
-          <View>
-            <Text style={styles.titleStyle}>{Translate('Filebase Logging')}</Text>
+
+        {/* 🎨 Appearance */}
+        <View style={[styles.card, { backgroundColor: appTheme === AppConstants.dark ? Colors.grey : Colors.white }]}>
+          <View style={styles.rowBetween}>
             <View>
+              <Text style={styles.cardTitle}>{Translate('Change Appearance')}</Text>
+              <Text style={styles.cardSubtitle}>
+                {darkTheme ? Translate('Dark') : Translate('Light')}
+              </Text>
+            </View>
+
+            <Switch value={darkTheme} onValueChange={toggleSwitch} />
+          </View>
+        </View>
+
+        {/* 📁 File Logging */}
+        <View style={[styles.card, { backgroundColor: appTheme === AppConstants.dark ? Colors.grey : Colors.white }]}>
+          <View style={styles.rowBetween}>
+            <View>
+              <Text style={styles.cardTitle}>{Translate('Filebase Logging')}</Text>
+
               <Text
                 onPress={showLogFilePaths}
-                style={[styles.subTitleStyle, styles.button]}>{Translate('Show file paths')}</Text>
+                style={[styles.cardSubtitle, styles.textLink]}
+              >
+                {Translate('Show file paths')}
+              </Text>
             </View>
+
+            <Switch value={enabled} onValueChange={changeEnabled} />
           </View>
-          <Switch value={enabled} onValueChange={changeEnabled} />
         </View>
+
+        {/* 🧪 Crashlytics & Toast Test */}
+        <Pressable
+          style={({ pressed }) => [styles.commonStyles, styles.crashButton, pressed && styles.buttonPressedEffect]}
+          onPress={onCrashlyticsTest}
+        >
+          <Text style={styles.buttonText}>{Translate('Test Crashlytics')}</Text>
+        </Pressable>
+
+        <Pressable
+          style={({ pressed }) => [styles.commonStyles, styles.crashButton, pressed && styles.buttonPressedEffect]}
+          onPress={onAnalyticsTest}
+        >
+          <Text style={styles.buttonText}>{Translate('Test Analytics')}</Text>
+        </Pressable>
+
+        <Pressable
+          style={({ pressed }) => [styles.commonStyles, styles.toastButton, pressed && styles.buttonPressedEffect]}
+          onPress={onShowToast}
+        >
+          <Text style={styles.buttonText}>{Translate('Show Toast')}</Text>
+        </Pressable>
+
+
       </View>
     </MainView>
+
   );
 };
 
 export default SettingsScreen;
 
 const styles = StyleSheet.create({
-  dropdown: {
-    marginVertical: 10,
-    height: 50,
-    borderColor: Colors.white,
-    backgroundColor: Colors.lightGrey,
-    borderWidth: 0.5,
-    borderRadius: 6,
-    paddingHorizontal: 8,
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 10,
   },
+
+  /* ✨ Card Wrapper */
+  card: {
+    width: '100%',
+    backgroundColor: Colors.white,
+    padding: 18,
+    marginVertical: 10,
+    borderRadius: 16,
+    shadowColor: Colors.black,
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 6,
+  },
+
+  /* 📝 Titles */
+  cardTitle: {
+    color: Colors.charcoal,
+    fontSize: fontWidth.FONT22,
+    fontWeight: '700',
+    letterSpacing: 0.4,
+    marginBottom: 10,
+  },
+
+  cardSubtitle: {
+    color: Colors.accent,
+    fontSize: fontHeight.FONT13,
+    fontWeight: '500',
+    marginTop: 4,
+  },
+
+  textLink: {
+    textDecorationLine: 'underline',
+    fontWeight: '600',
+    marginTop: 6,
+  },
+
+  /* 🔽 Dropdown modernized */
+  dropdown: {
+    height: windowHeight(40),
+    borderRadius: 12,
+    paddingHorizontal: windowWidth(15),
+    backgroundColor: Colors.lightGrey,
+    borderWidth: 0,
+    shadowColor: Colors.black,
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+
   placeholderStyle: {
     fontSize: 16,
+    color: Colors.grey,
   },
+
   selectedTextStyle: {
-    fontSize: 16,
-  },
-  iconStyle: {
-    width: 30,
-    height: 30,
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 16,
-  },
-  titleStyle: {
-    color: Colors.charcoal,
-    fontSize: fontWidth.FONT20,
+    fontSize: fontHeight.FONT16,
     fontWeight: '600',
+    color: Colors.charcoal,
   },
-  subTitleStyle: {
-    color: Colors.accent,
-    fontSize: fontHeight.FONT11,
+
+  iconStyle: {
+    width: windowWidth(26),
+    height: windowHeight(26),
+    tintColor: Colors.accent,
   },
-  settingsRow: {
+
+  /* Layout helpers */
+  rowBetween: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 10,
+    alignItems: 'center',
   },
-  button: {
-    textDecorationLine: 'underline'
+
+  /* 🧪 Diagnostics Buttons */
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 16,
+    gap: 14,
+  },
+  diagButton: {
+    flex: 1,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 4,
+    shadowColor: Colors.black,
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+  },
+  commonStyles: {
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderRadius: 12,
+    elevation: 4,
+    shadowColor: Colors.black,
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+    marginTop: windowHeight(10)
+  },
+  crashButton: {
+    backgroundColor: Colors.accent,
+  },
+  toastButton: {
+    backgroundColor: Colors.accent,
+
+  },
+  buttonPressedEffect: {
+    opacity: 0.85,
+    elevation: 2,
+  },
+  buttonIcon: {
+    fontSize: 24,
+    marginBottom: 6,
+  },
+  buttonText: {
+    color: Colors.white,
+    fontSize: fontHeight.FONT16,
+    fontWeight: '700',
+    textAlign: 'center',
   },
 });

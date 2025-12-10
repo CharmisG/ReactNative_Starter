@@ -1,8 +1,7 @@
-import {useTranslation} from 'react-i18next';
+import i18n from '../Localization/Localize';
 
-const Translate = (val: any) => {
-  const {t} = useTranslation();
-  return t(val);
+const Translate = (key: string): string => {
+  return i18n.t(key);
 };
 
 export default Translate;

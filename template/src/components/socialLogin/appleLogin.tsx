@@ -1,55 +1,65 @@
-import React, { Component, useEffect } from 'react';
-import { View } from 'react-native';
-import { AppleButton, appleAuthAndroid, appleAuth } from '@invertase/react-native-apple-authentication';
-
-
+import React, { Component, useContext, useEffect } from 'react';
+import { Button, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { appleAuth, AppleButton } from '@invertase/react-native-apple-authentication';
+import { AppleAuthProvider, getAuth, signInWithCredential } from '@react-native-firebase/auth';
+import { windowHeight } from '../../styles/Dimens';
+import { AuthContext } from '../../hooks/AuthContext';
 
 type State = {
-    userInfo: | undefined;
+    userInfo: AppleAuthProvider | undefined;
     error: Error | undefined;
 };
 
-useEffect(() => {
-    // onCredentialRevoked returns a function that will remove the event listener. useEffect will call this function when the component unmounts
-    return appleAuth.onCredentialRevoked(async () => {
-        console.warn('If this function executes, User Credentials have been Revoked');
-    });
-}, []);
+export default function AppleSigninSampleApp({ navigation }) {
 
-export class GoogleSigninSampleApp extends Component<{}, State> {
+    const { login } = useContext(AuthContext);
 
-    async onAppleButtonPress() {
+    const onAppleButtonPress = async () => {
+        // Start the sign-in request
         const appleAuthRequestResponse = await appleAuth.performRequest({
             requestedOperation: appleAuth.Operation.LOGIN,
-            // Note: it appears putting FULL_NAME first is important, see issue #293
+            // As per the FAQ of react-native-apple-authentication, the name should come first in the following array.
+            // See: https://github.com/invertase/react-native-apple-authentication#faqs
             requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
         });
 
-        // get current authentication state for user
-        // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
-        const credentialState = await appleAuth.getCredentialStateForUser(appleAuthRequestResponse.user);
-
-        // use credentialState response to ensure the user is authenticated
-        if (credentialState === appleAuth.State.AUTHORIZED) {
-            // user is authenticated
+        // Ensure Apple returned a user identityToken
+        if (!appleAuthRequestResponse.identityToken) {
+            throw new Error('Apple Sign-In failed - no identify token returned');
         }
-    }
-    render() {
-        return (
-            <View>
-                {appleAuthAndroid.isSupported && (
 
-                    <AppleButton
-                        buttonStyle={AppleButton.Style.WHITE}
-                        buttonType={AppleButton.Type.SIGN_IN}
-                        style={{
-                            width: 160, // You must specify a width
-                            height: 45, // You must specify a height
-                        }}
-                        onPress={() => this.onAppleButtonPress()}
-                    />
-                )}
-            </View>
-        );
+        // Create a Firebase credential from the response
+        const { identityToken, nonce } = appleAuthRequestResponse;
+        const appleCredential = AppleAuthProvider.credential(identityToken, nonce);
+
+        signInWithCredential(getAuth(), appleCredential).then((data) => {
+            login('apple');
+            navigation.replace('Tabs');
+            console.log('Apple Sign-In Successful', data);
+
+        }).catch((error) => {
+
+        });
+
+        // Sign the user in with the credential
+        return signInWithCredential(getAuth(), appleCredential);
     }
+
+    return (
+        <AppleButton
+            buttonStyle={AppleButton.Style.BLACK}
+            buttonType={AppleButton.Type.SIGN_IN}
+            style={styles.appleButton}
+            onPress={onAppleButtonPress}
+        />
+    );
 }
+
+
+const styles = StyleSheet.create({
+    appleButton: {
+        width: "100%",
+        height: windowHeight(35),
+        marginTop: windowHeight(10),
+    },
+});

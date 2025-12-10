@@ -1,4 +1,4 @@
-package com.saviant.reactkit
+package com.saviant.reactstarterkit
 
 import android.os.Bundle
 import com.facebook.react.ReactActivity

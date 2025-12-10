@@ -1,5 +1,5 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {getSampleDataAsync} from '../../api/SampleService';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { getSampleDataAsync } from '../../api/SampleService';
 import SampleModel from '../../models/SampleModel';
 
 const getSampleDataAction = createAsyncThunk(
@@ -11,10 +11,14 @@ const getSampleDataAction = createAsyncThunk(
 
 interface SampleState {
   sampleData: any;
+  isLoading: boolean;
+  error: string | null;
 }
 
 const initialState: SampleState = {
   sampleData: [],
+  isLoading: false,
+  error: null,
 };
 
 const HomeSlice = createSlice({
@@ -23,7 +27,8 @@ const HomeSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(getSampleDataAction.pending, (state, action) => {
-      //
+      state.isLoading = true;
+      state.error = null;
     });
     builder.addCase(getSampleDataAction.fulfilled, (state, action) => {
       let sampleList = [];
@@ -36,12 +41,15 @@ const HomeSlice = createSlice({
         sampleList.push(sampleModel);
       }
       state.sampleData = [...sampleList];
+      state.isLoading = false;
+      state.error = null;
     });
     builder.addCase(getSampleDataAction.rejected, (state, action) => {
-      //
+      state.isLoading = false;
+      state.error = action.error.message || 'Failed to load data';
     });
   },
 });
 
-export const HomeSliceActions = {...HomeSlice.actions, getSampleDataAction};
+export const HomeSliceActions = { ...HomeSlice.actions, getSampleDataAction };
 export default HomeSlice.reducer;

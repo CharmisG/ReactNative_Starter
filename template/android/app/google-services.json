@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "171302444102",
+    "project_id": "react-starterkit-e449f",
+    "storage_bucket": "react-starterkit-e449f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:171302444102:android:183d9fd64ab03fabdd3e47",
+        "android_client_info": {
+          "package_name": "com.saviant.reactstarterkit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "171302444102-9bgk2bkgeihbq7bnuvd5c9d6d3mh267e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.saviant.reactstarterkit",
+            "certificate_hash": "e71b2af387f360755768dd50c679dafd3c44340b"
+          }
+        },
+        {
+          "client_id": "171302444102-dlant4qg1npb2sm3dd21s1fpah00nl7e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.saviant.reactstarterkit",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "171302444102-29k2kf2chce0ht98up4qql739f4a1o0j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTbwbGFf5Na6QJuCOhy4rChaXhQfC9_2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "171302444102-29k2kf2chce0ht98up4qql739f4a1o0j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

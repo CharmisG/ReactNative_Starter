@@ -26,6 +26,19 @@
     "This is screen three with view enclosed in Main View": "This is screen three with view enclosed in Main View",
     "You want to open screen ?": "You want to open screen ?",
     "Open": "Open",
-    "Cancel": "Cancel"
+    "Cancel": "Cancel",
+    "Sign in with Google": "Sign in with Google",
+    "Sign in with Facebook": "Sign in with Facebook",
+    "Start writing here...": "Start writing here...",
+    "Check Spelling & Grammar": "Check Spelling & Grammar",
+    "Pending": "Pending",
+    "Test Crashlytics": "Test Crashlytics",
+    "Test Analytics": "Test Analytics",
+    "Show Toast": "Show Toast",
+    "Select Language": "Select Language",
+    "Spanish": "Spanish",
+    "TextEditor": "Text Editor",
+    "Loading": "Loading",
+    "No data available": "No data available"
   }
 }

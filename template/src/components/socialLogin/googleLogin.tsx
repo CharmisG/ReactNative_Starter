@@ -1,105 +1,46 @@
-import React, { Component } from 'react';
+import React, { Component, createContext, useContext, useEffect, useState } from 'react';
 import {
     StyleSheet,
     Text,
-    View,
     Alert,
-    Button,
-    SafeAreaView,
+    TouchableOpacity,
 } from 'react-native';
 import {
     GoogleSignin,
-    GoogleSigninButton,
     isErrorWithCode,
-    NativeModuleError,
     statusCodes,
-    User,
 } from '@react-native-google-signin/google-signin';
+import { fontHeight } from '../../styles/Fonts';
+import { AuthContext } from '../../hooks/AuthContext';
+import Colors from '../../styles/Colors';
+import Translate from '../../hooks/Translate';
 
-type State = {
-    userInfo: User | undefined;
-    error: Error | undefined;
-};
+export default function GoogleSigninSampleApp({ navigation }): React.JSX.Element {
+    const { login } = useContext(AuthContext);
 
-export class GoogleSigninSampleApp extends Component<{}, State> {
-    state = {
-        userInfo: undefined,
-        error: undefined,
-    };
-
-
-    configureGoogleSignIn = () => {
+    const configureGoogleSignIn = () => {
         GoogleSignin.configure({
-            webClientId: '',
-            iosClientId: '',
+            webClientId: '664158953793-a5ig1mdqos1v2259be4acqglvk80aoqt.apps.googleusercontent.com',
+            iosClientId: '664158953793-jdltnb4tj3ml4tki50hkvh0dngn39afm.apps.googleusercontent.com',
             offlineAccess: false,
             profileImageSize: 150,
         });
     };
 
-    async componentDidMount() {
+    useEffect(() => {
         console.log('GoogleSigninSampleApp mounted');
-        this.configureGoogleSignIn();
-    }
+        configureGoogleSignIn();
+    }, []);
 
-    render() {
-        const { userInfo } = this.state;
-
-        const body = userInfo ? (
-            this.renderUserInfo(userInfo)
-        ) : (
-            <Button
-                title="Google Sign-In"
-                onPress={() => this._signIn()}
-            />
-        );
-        return (
-            <SafeAreaView style={[styles.pageContainer]}>
-                {body}
-            </SafeAreaView>
-        );
-    }
-
-    prettyJson = (value: any) => {
-        function sort(object: any) {
-            if (!object || typeof object !== 'object' || object instanceof Array)
-                return object;
-            const keys = Object.keys(object);
-            keys.sort();
-            const newObject = {};
-            for (let i = 0; i < keys.length; i++) {
-                // @ts-ignore
-                newObject[keys[i]] = sort(object[keys[i]]);
-            }
-            return newObject;
-        }
-        return JSON.stringify(sort(value), null, 2);
-    };
-
-    renderUserInfo(userInfo: User) {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.welcomeText}>Welcome, {userInfo.user.name}</Text>
-                <Text selectable style={{ color: 'black' }}>
-                    Your user info:{' '}
-                    {this.prettyJson({
-                        ...userInfo,
-                        idToken: `${userInfo.idToken?.slice(0, 5)}...`,
-                    })}
-                </Text>
-                <Button onPress={this._signOut} title="Log out" />
-            </View>
-        );
-    }
-
-    _signIn = async () => {
+    const _signIn = async () => {
         try {
             await GoogleSignin.hasPlayServices();
             const { type, data } = await GoogleSignin.signIn();
             console.log('type', type);
             if (type === 'success') {
                 console.log({ data });
-                this.setState({ userInfo: data, error: undefined });
+                login('google')
+                navigation.replace('Tabs');
             } else {
                 // sign in was cancelled by user
                 setTimeout(() => {
@@ -124,39 +65,32 @@ export class GoogleSigninSampleApp extends Component<{}, State> {
                     default:
                         Alert.alert('Something went wrong: ', error.toString());
                 }
-                this.setState({
-                    error,
-                });
             } else {
                 Alert.alert(`an error that's not related to google sign in occurred`);
             }
         }
     };
 
-    _signOut = async () => {
-        try {
-            await GoogleSignin.revokeAccess();
-            await GoogleSignin.signOut();
-
-            this.setState({ userInfo: undefined, error: undefined });
-        } catch (error) {
-            this.setState({
-                error: error as NativeModuleError,
-            });
-        }
-    };
-
+    return (
+        <TouchableOpacity style={styles.button}
+            onPress={_signIn}>
+            <Text style={styles.buttonText}>{Translate('Sign in with Google')}</Text>
+        </TouchableOpacity>
+    );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        alignItems: 'center',
+    button: {
+        width: "100%",
+        padding: 14,
+        borderRadius: 8,
+        alignItems: "center",
+        marginVertical: 10,
+        backgroundColor: Colors.primary,
     },
-    welcomeText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        color: 'black',
+    buttonText: {
+        color: Colors.black,
+        fontSize: fontHeight.FONT14,
+        fontWeight: "600",
     },
-    pageContainer: { margin: 10, backgroundColor: '#F5FCFF' },
 });

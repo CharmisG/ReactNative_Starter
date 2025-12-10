@@ -1,6 +1,9 @@
 
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import Colors from '../styles/Colors';
+import { fontHeight } from '../styles/Fonts';
+import { windowHeight, windowWidth } from '../styles/Dimens';
 
 const TextEditorScreen = () => {
     const [text, setText] = useState('');
@@ -61,22 +64,42 @@ const TextEditorScreen = () => {
 
     return (
         <View style={styles.container}>
-            <TextInput
-                style={styles.textInput}
-                multiline
-                placeholder="Start writing here..."
-                value={text}
-                onChangeText={setText}
-            />
-            <Button title="Check Spelling & Grammar" onPress={checkSpellingAndGrammar} />
-            {errors.length > 0 && ( // Check if there are any errors
-                <View style={styles.errorContainer}>
-                    <Text style={styles.errorTitle}>{title?.toUpperCase()} ERROR :</Text>
-                    {errors.map((error, index) => (
-                        <Text key={index} style={styles.errorText}>• {error}</Text>
+
+            {/* ✏️ Title */}
+            <Text style={styles.heading}>Text Editor</Text>
+
+            {/* 📝 Editor Card */}
+            <View style={styles.editorCard}>
+                <TextInput
+                    style={styles.textInput}
+                    multiline
+                    placeholder="Start writing here..."
+                    value={text}
+                    onChangeText={setText}
+                    placeholderTextColor="#888"
+                />
+            </View>
+
+            {/* 🔵 Modern Button */}
+            <TouchableOpacity style={styles.button} onPress={checkSpellingAndGrammar}>
+                <Text style={styles.buttonText}>Check Spelling & Grammar</Text>
+            </TouchableOpacity>
+
+            {/* ⚠ Error Card */}
+            {errors.length > 0 && (
+                <View style={styles.errorCard}>
+                    <Text style={styles.errorTitle}>
+                        {title?.toUpperCase() || "GRAMMAR"} ERRORS
+                    </Text>
+
+                    {errors.map((err, i) => (
+                        <Text key={i} style={styles.errorText}>
+                            • {err}
+                        </Text>
                     ))}
                 </View>
             )}
+
         </View>
     );
 };
@@ -84,127 +107,85 @@ const TextEditorScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
-        backgroundColor: '#fff',
+        padding: 20,
+        backgroundColor: Colors.white,
     },
+
+    heading: {
+        fontSize: fontHeight.FONT21,
+        fontWeight: "800",
+        marginBottom: windowWidth(20),
+        color: Colors.black,
+        letterSpacing: 0.5,
+    },
+
+    /* 📝 Editor Card */
+    editorCard: {
+        backgroundColor: Colors.white,
+        padding: 14,
+        borderRadius: 15,
+        marginBottom: windowHeight(15),
+
+        shadowColor: Colors.black,
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 4 },
+        elevation: 4,
+    },
+
     textInput: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        height: 300,
-        padding: 10,
-        marginBottom: 10,
+        height: windowHeight(200),
+        fontSize: fontHeight.FONT16,
+        color: Colors.black,
+        textAlignVertical: "top",
     },
-    errorContainer: {
-        marginTop: 16,
-        padding: 10,
-        backgroundColor: '#f8d7da',
-        borderRadius: 5,
+
+    /* 🔵 Button */
+    button: {
+        backgroundColor: Colors.primary,
+        paddingVertical: windowHeight(14),
+        borderRadius: 12,
+        alignItems: "center",
+
+        shadowColor: Colors.primary,
+        shadowOpacity: 0.25,
+        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 4 },
+        elevation: 4,
     },
+
+    buttonText: {
+        color: Colors.white,
+        fontSize: fontHeight.FONT16,
+        fontWeight: "700",
+    },
+
+    /* ⚠ Error Card */
+    errorCard: {
+        backgroundColor: Colors.errorBackground,
+        padding: 16,
+        borderRadius: 12,
+        marginTop: windowHeight(20),
+
+        shadowColor: Colors.errorText,
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+        elevation: 3,
+    },
+
     errorTitle: {
-        fontWeight: 'bold',
-        color: '#721c24',
+        fontSize: fontHeight.FONT14,
+        fontWeight: "700",
+        color: Colors.errorText,
+        marginBottom: windowHeight(10),
     },
+
     errorText: {
-        color: '#721c24',
+        fontSize: fontHeight.FONT13,
+        color: Colors.errorText,
+        marginBottom: windowHeight(6),
     },
 });
 
+
 export default TextEditorScreen;
-
-// import React, { useState } from 'react';
-// import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
-
-// const TextEditorScreen = () => {
-//     const [text, setText] = useState('');
-//     const [errors, setErrors] = useState<string | null>(null); // Change to string | null
-//     const [title, setTitle] = useState<string | null>(null); // Change to string | null
-
-
-//     const checkSpelling = async () => {
-//         try {
-//             const response = await fetch('https://api.languagetoolplus.com/v2/check', {
-//                 method: 'POST',
-//                 headers: {
-//                     'Content-Type': 'application/x-www-form-urlencoded',
-//                 },
-//                 body: new URLSearchParams({
-//                     text: text, // Ensure this is not empty
-//                     language: 'en-US',
-//                 }).toString(), // Convert to string
-//             });
-
-//             // Check if the response is OK (status code 200)
-//             if (!response.ok) {
-//                 const errorText = await response.text(); // Get the response text
-//                 console.error('Error response:', errorText); // Log the error response
-//                 throw new Error(`Error: ${response.status} ${response.statusText}`);
-//             }
-
-//             const data = await response.json();
-//             console.log('Response data:', JSON.stringify(data));
-
-//             // Extract only the misspelled words
-//             if (data['matches'].length !== 0) {
-//                 console.log('Response data123:', data['matches'][0]['message']);
-//                 setTitle(data['matches'][0]['rule']['issueType']); // Set the title
-//                 setErrors(data['matches'][0]['message']); // Set the error message
-//             } else {
-//                 setErrors(null); // Reset errors if no matches
-//             }
-//         } catch (error) {
-//             console.error('Error checking spelling:', error);
-//             setErrors('An error occurred while checking spelling.');
-//         }
-//     };
-
-//     return (
-//         <View style={styles.container}>
-//             <TextInput
-//                 style={styles.textInput}
-//                 multiline
-//                 placeholder="Start writing here..."
-//                 value={text}
-//                 onChangeText={setText}
-//             />
-//             <Button title="Check Spelling" onPress={checkSpelling} />
-//             {errors && ( // Check if errors is not null
-//                 <View style={styles.errorContainer}>
-//                     <Text style={styles.errorTitle}>{title?.toUpperCase()} ERROR</Text>
-//                     <Text style={styles.errorText}>• {errors}</Text>
-//                 </View>
-//             )}
-//         </View>
-//     );
-// };
-
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         padding: 16,
-//         backgroundColor: '#fff',
-//     },
-//     textInput: {
-//         borderWidth: 1,
-//         borderColor: '#ccc',
-//         height: 300,
-//         padding: 10,
-//         marginBottom: 10,
-//     },
-//     errorContainer: {
-//         marginTop: 16,
-//         padding: 10,
-//         backgroundColor: '#f8d7da',
-//         borderRadius: 5,
-//     },
-//     errorTitle: {
-//         fontWeight: 'bold',
-//         color: '#721c24',
-//     },
-//     errorText: {
-//         color: '#721c24',
-//     },
-// });
-
-// export default TextEditorScreen;
-
-

@@ -7,6 +7,8 @@ const Colors = {
   grey: '#bdbcbb',
   lightGrey: '#edece8',
   charcoal: '#585a5c',
+  errorBackground: '#ffe8e8',
+  errorText: '#b00020',
 };
 
 export default Colors;

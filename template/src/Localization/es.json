@@ -26,6 +26,19 @@
     "This is screen three with view enclosed in Main View": "Esta es la pantalla tres con la vista incluida en la Vista principal",
     "You want to open screen ?": "¿Quieres abrir la pantalla?",
     "Open": "Abierta",
-    "Cancel": "Cancelar"
+    "Cancel": "Cancelar",
+    "Sign in with Google": "Iniciar sesión con Google",
+    "Sign in with Facebook": "Iniciar sesión con Facebook",
+    "Start writing here...": "Empieza a escribir aquí...",
+    "Check Spelling & Grammar": "Revisar ortografía y gramática",
+    "Pending": "Pendiente",
+    "Test Crashlytics": "Prueba Crashlytics",
+    "Test Analytics": "Prueba Analytics",
+    "Show Toast": "Mostrar Notificación",
+    "Select Language": "Seleccionar Idioma",
+    "Spanish": "Español",
+    "TextEditor": "Editor de Texto",
+    "Loading": "Cargando",
+    "No data available": "No hay datos disponibles"
   }
 }
