@@ -1,4 +1,6 @@
 export type RootStackParamList = {
+    Login: undefined;
+    Tabs: undefined;
     HomeTab: undefined;
     Dashboard: undefined;
     ScreenTwo: undefined;

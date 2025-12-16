@@ -14,17 +14,13 @@ import { fontHeight } from '../../styles/Fonts';
 import { AuthContext } from '../../hooks/AuthContext';
 import Colors from '../../styles/Colors';
 import Translate from '../../hooks/Translate';
+import { AuthConfig } from '../../config/AppConfig';
 
 export default function GoogleSigninSampleApp({ navigation }): React.JSX.Element {
     const { login } = useContext(AuthContext);
 
     const configureGoogleSignIn = () => {
-        GoogleSignin.configure({
-            webClientId: '664158953793-a5ig1mdqos1v2259be4acqglvk80aoqt.apps.googleusercontent.com',
-            iosClientId: '664158953793-jdltnb4tj3ml4tki50hkvh0dngn39afm.apps.googleusercontent.com',
-            offlineAccess: false,
-            profileImageSize: 150,
-        });
+        GoogleSignin.configure(AuthConfig.providers.google);
     };
 
     useEffect(() => {

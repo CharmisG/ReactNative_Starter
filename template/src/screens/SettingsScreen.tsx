@@ -4,8 +4,9 @@ import {
   Switch,
   StyleSheet,
   Alert,
-  Button,
   Pressable,
+  Image,
+  ScrollView,
 } from 'react-native';
 import MainView from '../components/MainView';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -28,6 +29,18 @@ import { windowHeight, windowWidth } from '../styles/Dimens';
 import { getCrashlytics, setUserId as setCrashlyticsUserId, crash, recordError, log as crashlyticsLog } from '@react-native-firebase/crashlytics';
 import { showToast } from '../contexts/ToastContext';
 import { getAnalytics, logEvent, setUserId as setAnalyticsUserId } from '@react-native-firebase/analytics';
+import { VersionSliceActions } from '../redux/slices/VersionSlice';
+import { Asset, launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { FeatureFlags } from '../config/AppConfig';
+import { setItem } from '../components/localStorage';
+import { StorageKeys } from '../constants/StorageKeys';
+
+declare global {
+  // Used to persist the user's language selection in-memory
+  // across SettingsScreen and app entrypoints.
+  // Consider persisting to storage if long-term retention is needed.
+  var appLanguage: string | undefined;
+}
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
@@ -37,23 +50,56 @@ const SettingsScreen = ({ navigation }: Props) => {
   const [enabled, setEnabled] = useState(true);
   const crashlyticsInstance = getCrashlytics();
   const analyticsInstance = getAnalytics();
+  const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
+
+  const localizationConfig = FeatureFlags.localization;
+  const supportedLanguages = (localizationConfig?.supportedLanguages ?? []) as string[];
+  const localizationEnabled = localizationConfig?.enabled ?? false;
 
   const [selectedLanguage, setSelectedLanguage] = useState(
-    global.appLanguage ?? 'en',
+    global.appLanguage ?? localizationConfig?.defaultLanguage ?? 'en',
   );
   const [darkTheme, setDarkTheme] = useState(
     appTheme === AppConstants.dark ? true : false,
   );
 
-  const settingsList: any = [
-    new DropdownModel(Translate('English'), 'en'),
-    new DropdownModel(Translate('Spanish'), 'es'),
-  ];
+  const settingsList: any =
+    supportedLanguages.map(lang => {
+      switch (lang) {
+        case 'es':
+          return new DropdownModel(Translate('Spanish'), 'es');
+        case 'en':
+        default:
+          return new DropdownModel(Translate('English'), 'en');
+      }
+    });
 
-  function onLanguageChanged(val: string) {
+  async function onLanguageChanged(val: string) {
+    if (!localizationEnabled) {
+      return;
+    }
+    if (!supportedLanguages.includes(val)) {
+      showToast({ text: 'Language not supported', type: 'error' });
+      return;
+    }
+
+    // Update i18n and global state
     i18n.changeLanguage(val);
     global.appLanguage = val;
     setSelectedLanguage(val);
+
+    // Persist to AsyncStorage
+    try {
+      await setItem(StorageKeys.SELECTED_LANGUAGE, val);
+      if (__DEV__) {
+        console.log(`Language preference saved: ${val}`);
+      }
+    } catch (error) {
+      if (__DEV__) {
+        console.warn('Failed to save language preference:', error);
+      }
+      // Continue even if save fails - language is already changed
+    }
   }
 
   function toggleSwitch() {
@@ -104,6 +150,16 @@ const SettingsScreen = ({ navigation }: Props) => {
     showToast({ text: 'This is a test toast', type: 'success' });
   };
 
+  const onCheckAppVersion = async () => {
+    try {
+      showToast({ text: 'Checking for app updates...', type: 'info' });
+      await dispatch(VersionSliceActions.checkVersionUpdate());
+    } catch (error) {
+      console.error('Version check failed', error);
+      showToast({ text: 'Failed to check for updates', type: 'error' });
+    }
+  };
+
   const changeEnabled = (value: boolean) => {
     if (value) {
       FileLogger.enableConsoleCapture();
@@ -117,35 +173,75 @@ const SettingsScreen = ({ navigation }: Props) => {
     Alert.alert(Translate('Show file paths'), (await FileLogger.getLogFilePaths()).join("\n"));
   };
 
+  const handleImagePickerResult = (assets?: Asset[] | null, errorMessage?: string) => {
+    if (errorMessage) {
+      showToast({ text: errorMessage, type: 'error' });
+      return;
+    }
+    const chosenImage = assets?.[0];
+    if (chosenImage?.uri) {
+      setSelectedImageUri(chosenImage.uri);
+    }
+  };
+
+  const onPickImageFromLibrary = async () => {
+    const result = await launchImageLibrary({
+      mediaType: 'photo',
+      quality: 0.7,
+      selectionLimit: 1,
+    });
+    if (result.didCancel) {
+      return;
+    }
+    handleImagePickerResult(result.assets, result.errorMessage);
+  };
+
+  const onCaptureImageWithCamera = async () => {
+    const result = await launchCamera({
+      mediaType: 'photo',
+      quality: 0.7,
+      saveToPhotos: true,
+      cameraType: 'back',
+    });
+    if (result.didCancel) {
+      return;
+    }
+    handleImagePickerResult(result.assets, result.errorMessage);
+  };
+
   return (
     <MainView
       screenTitle={Translate('Settings')}
       leftIconPressed={() => navigation.goBack()}
     >
-      <View
+      <ScrollView
         style={[
           styles.container,
           { backgroundColor: appTheme === AppConstants.dark ? Colors.black : Colors.white }
         ]}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
       >
 
         {/* 🌐 Language */}
-        <View style={[styles.card, { backgroundColor: appTheme === AppConstants.dark ? Colors.grey : Colors.white }]}>
-          <Text style={styles.cardTitle}>{Translate('Change Language')}</Text>
+        {localizationEnabled && (
+          <View style={[styles.card, { backgroundColor: appTheme === AppConstants.dark ? Colors.grey : Colors.white }]}>
+            <Text style={styles.cardTitle}>{Translate('Change Language')}</Text>
 
-          <Dropdown
-            data={settingsList}
-            style={styles.dropdown}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            iconStyle={styles.iconStyle}
-            labelField="name"
-            valueField="value"
-            placeholder={Translate('Select Language')}
-            value={selectedLanguage}
-            onChange={item => onLanguageChanged(item.value)}
-          />
-        </View>
+            <Dropdown
+              data={settingsList}
+              style={styles.dropdown}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              iconStyle={styles.iconStyle}
+              labelField="name"
+              valueField="value"
+              placeholder={Translate('Select Language')}
+              value={selectedLanguage}
+              onChange={item => onLanguageChanged(item.value)}
+            />
+          </View>
+        )}
 
         {/* 🎨 Appearance */}
         <View style={[styles.card, { backgroundColor: appTheme === AppConstants.dark ? Colors.grey : Colors.white }]}>
@@ -195,14 +291,56 @@ const SettingsScreen = ({ navigation }: Props) => {
         </Pressable>
 
         <Pressable
-          style={({ pressed }) => [styles.commonStyles, styles.toastButton, pressed && styles.buttonPressedEffect]}
+          style={({ pressed }) => [styles.commonStyles, styles.crashButton, pressed && styles.buttonPressedEffect]}
           onPress={onShowToast}
         >
           <Text style={styles.buttonText}>{Translate('Show Toast')}</Text>
         </Pressable>
 
+        <Pressable
+          style={({ pressed }) => [styles.commonStyles, styles.crashButton, pressed && styles.buttonPressedEffect]}
+          onPress={onCheckAppVersion}
+        >
+          <Text style={styles.buttonText}>{Translate('Check for Updates')}</Text>
+        </Pressable>
 
-      </View>
+        {(FeatureFlags?.mediaPicker?.camera || FeatureFlags?.mediaPicker?.gallery) && (
+          <View style={[styles.card, { backgroundColor: appTheme === AppConstants.dark ? Colors.grey : Colors.white }]}>
+            <Text style={styles.cardTitle}>{Translate('Profile Image')}</Text>
+            <View style={styles.buttonRow}>
+              {FeatureFlags?.mediaPicker?.camera && (
+                <Pressable
+                  style={({ pressed }) => [styles.diagButton, styles.cameraButton, pressed && styles.buttonPressedEffect]}
+                  onPress={onCaptureImageWithCamera}
+                >
+                  <Text style={styles.buttonText}>{Translate('Open Camera')}</Text>
+                </Pressable>
+              )}
+              {FeatureFlags?.mediaPicker?.gallery && (
+                <Pressable
+                  style={({ pressed }) => [styles.diagButton, styles.libraryButton, pressed && styles.buttonPressedEffect]}
+                  onPress={onPickImageFromLibrary}
+                >
+                  <Text style={styles.buttonText}>{Translate('Pick from Gallery')}</Text>
+                </Pressable>
+              )}
+            </View>
+
+            {selectedImageUri && (
+              <View style={styles.previewContainer}>
+                <Image
+                  source={{ uri: selectedImageUri }}
+                  style={styles.previewImage}
+                  resizeMode="cover"
+                />
+                <Text style={styles.previewLabel}>{Translate('Selected Image')}</Text>
+              </View>
+            )}
+          </View>
+        )}
+
+
+      </ScrollView>
     </MainView>
 
   );
@@ -212,9 +350,11 @@ export default SettingsScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     paddingHorizontal: 20,
     paddingTop: 10,
+  },
+  scrollContent: {
+    paddingBottom: windowHeight(20),
   },
 
   /* ✨ Card Wrapper */
@@ -322,24 +462,37 @@ const styles = StyleSheet.create({
     marginTop: windowHeight(10)
   },
   crashButton: {
-    backgroundColor: Colors.accent,
-  },
-  toastButton: {
-    backgroundColor: Colors.accent,
-
+    backgroundColor: Colors.charcoal,
   },
   buttonPressedEffect: {
     opacity: 0.85,
     elevation: 2,
   },
-  buttonIcon: {
-    fontSize: 24,
-    marginBottom: 6,
-  },
   buttonText: {
     color: Colors.white,
-    fontSize: fontHeight.FONT16,
+    fontSize: fontHeight.FONT13,
     fontWeight: '700',
     textAlign: 'center',
+  },
+  cameraButton: {
+    backgroundColor: Colors.charcoal,
+  },
+  libraryButton: {
+    backgroundColor: Colors.accent,
+  },
+  previewContainer: {
+    marginTop: 14,
+    alignItems: 'center',
+  },
+  previewImage: {
+    width: '100%',
+    height: windowHeight(200),
+    borderRadius: 12,
+  },
+  previewLabel: {
+    marginTop: 8,
+    color: Colors.charcoal,
+    fontSize: fontHeight.FONT13,
+    fontWeight: '600',
   },
 });

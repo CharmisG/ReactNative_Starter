@@ -1,5 +1,5 @@
 import axios from 'axios';
-import UrlConstants from '../constants/UrlConstants';
+import { UrlConstants } from '../config/AppConfig';
 import ApiLogModel from '../models/ApiLogModel';
 import ApiResponse from '../models/ApiResponseModel';
 
@@ -20,7 +20,7 @@ export async function getData(url: string, authToken: string) {
     response = await axiosInstance.get(url);
     apiLogModel.status = response.status;
     apiLogModel.data = response.data;
-    
+
   } catch (error) {
     apiLogModel.error = error;
   } finally {

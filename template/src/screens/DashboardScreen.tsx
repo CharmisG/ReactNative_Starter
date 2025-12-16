@@ -18,7 +18,7 @@ import { RootStackParamList } from '../navigation/NavParamTypes';
 import Translate from '../hooks/Translate';
 import Colors from '../styles/Colors';
 import { fontHeight } from '../styles/Fonts';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import Images from '../utils/Images';
 import { useDispatch, useSelector } from 'react-redux';
 import { HomeSliceActions } from '../redux/slices/HomeSlice';
@@ -42,50 +42,56 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
   const scale = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState(false);
   const { loginType } = useContext(AuthContext);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const options = [
-    {
-      title: Translate('Settings'),
-      icon: Images.settings,
-      action: () => {
-        analyticsTest();
-        navigation.navigate('Settings');
-      },
-    },
-    {
-      title: Translate('TextEditor'),
-      icon: Images.settings,
-      action: () => {
-        navigation.navigate('TextEditor');
-      },
-    },
-    {
-      title: Translate('Logout'),
-      icon: Images.logout,
-      action: async () => {
-
-        if (loginType == "google") {
-          await GoogleSignin.revokeAccess();
-          await GoogleSignin.signOut();
-        } else if (loginType == "facebook") {
-          await auth().signOut();
-        } else if (loginType == "apple") {
-          await appleAuth.performRequest({
-            requestedOperation: appleAuth.Operation.LOGOUT,
-          });
-        }
-        loginType(null);
-        navigation.replace('Login');
-      },
-    },
-  ];
-
-  const analyticsTest = async () => {
+  const analyticsTest = useCallback(async () => {
     await analytics().logScreenView({
       screen_name: "Settings",
       screen_class: "Settings",
     });
-  }
+  }, []);
+
+  const options = useMemo(
+    () => [
+      {
+        title: Translate('Settings'),
+        icon: Images.settings,
+        action: () => {
+          analyticsTest();
+          navigation.getParent()?.navigate('Settings');
+        },
+      },
+      {
+        title: Translate('TextEditor'),
+        icon: Images.settings,
+        action: () => {
+          navigation.getParent()?.navigate('TextEditor');
+        },
+      },
+      {
+        title: Translate('Logout'),
+        icon: Images.logout,
+        action: async () => {
+          if (loginType == "google") {
+            await GoogleSignin.revokeAccess();
+            await GoogleSignin.signOut();
+          } else if (loginType == "facebook") {
+            await auth().signOut();
+          } else if (loginType == "apple") {
+            await appleAuth.performRequest({
+              requestedOperation: appleAuth.Operation.LOGOUT,
+            });
+          }
+          loginType(null);
+          navigation.getParent()?.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+          });
+        },
+      },
+    ],
+    [analyticsTest, loginType, navigation],
+  );
 
   function resizeBox(to: number) {
     to === 1 && setVisible(true);
@@ -98,13 +104,11 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
   }
 
   useEffect(() => {
-    console.log('DashboardScreen mounted', loginType);
     dispatch(HomeSliceActions.getSampleDataAction());
   }, []);
 
-  const [refreshing, setRefreshing] = useState(false);
 
-  const onRefresh = async () => {
+  const onRefresh = useCallback(async () => {
     try {
       setRefreshing(true);
       await dispatch(HomeSliceActions.getSampleDataAction());
@@ -113,7 +117,7 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
     } finally {
       setRefreshing(false);
     }
-  };
+  }, [dispatch]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -198,7 +202,7 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
               fontSize: fontHeight.FONT28,
               fontWeight: "700",
               letterSpacing: 0.5,
-              color: appTheme === AppConstants.dark ? Colors.black : Colors.white,
+              color: Colors.white,
             }}
           >
             {Translate('Hello')} 👋
@@ -266,7 +270,7 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
                   style={[styles.button, styles.buttonClose]}
                   onPress={() => {
                     setModalVisible(!modalVisible)
-                    navigation.navigate('ScreenTwo')
+                    navigation.getParent()?.navigate('ScreenTwo')
                   }
                   }>
                   <Text style={styles.textStyle}>{Translate('Open')}</Text>

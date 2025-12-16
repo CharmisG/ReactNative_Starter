@@ -3,23 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>664158953793-jdltnb4tj3ml4tki50hkvh0dngn39afm.apps.googleusercontent.com</string>
+	<string>171302444102-he4152a4cmkbi0u8gpurhign54t0gvn0.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.664158953793-jdltnb4tj3ml4tki50hkvh0dngn39afm</string>
+	<string>com.googleusercontent.apps.171302444102-he4152a4cmkbi0u8gpurhign54t0gvn0</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>664158953793-a2c1je805nlu0l4k3j3h71av3htrp3hj.apps.googleusercontent.com</string>
+	<string>171302444102-9bgk2bkgeihbq7bnuvd5c9d6d3mh267e.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBp4Qeqnqav31tmtRuTIURyAqAI1xrHNEw</string>
+	<string>AIzaSyDQb_-p4G6bYfSGs4pcj_YrVfjINv2zulA</string>
 	<key>GCM_SENDER_ID</key>
-	<string>664158953793</string>
+	<string>171302444102</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.saviant.reactstarterkit</string>
 	<key>PROJECT_ID</key>
-	<string>rntemplate-500a3</string>
+	<string>react-starterkit-e449f</string>
 	<key>STORAGE_BUCKET</key>
-	<string>rntemplate-500a3.firebasestorage.app</string>
+	<string>react-starterkit-e449f.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:664158953793:ios:a2f0469037e403f9d201c0</string>
+	<string>1:171302444102:ios:43514d5997551788dd3e47</string>
 </dict>
 </plist>

@@ -11,13 +11,14 @@ import MainTabNavigator from './MainTabNavigator';
 import SettingsScreen from '../screens/SettingsScreen';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
+import { RootStackParamList } from './NavParamTypes';
 import React, { useEffect, useState } from 'react';
 import { AppConstants } from '../constants/AppConstants';
 import TextEditorScreen from '../screens/TextEditorScreen';
 import LoginScreen from '../components/socialLogin';
 import { AuthProvider, AuthContext } from '../hooks/AuthContext';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 /**
  * Main navigator
@@ -32,7 +33,6 @@ export default function MainStackNavigator(): React.JSX.Element {
 
 
   useEffect(() => {
-    console.log('loginType:', loginType);
     setApplicationTheme(
       appTheme === AppConstants.dark ? DarkTheme : DefaultTheme,
     );
@@ -41,15 +41,14 @@ export default function MainStackNavigator(): React.JSX.Element {
   return (
     <NavigationContainer theme={applicationTheme}>
       <Stack.Navigator
-        // initialRouteName={loginType == null ? "Login" : "Tabs"}
-        initialRouteName={"Tabs"}
+        initialRouteName={loginType == null ? "Login" : "Tabs"}
         screenOptions={{
           headerShown: false,
           gestureEnabled: false,
         }}>
-        {/* <Stack.Screen name="Login" component={LoginScreen} /> */}
+        <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Tabs" component={MainTabNavigator} />
-        < Stack.Screen name="ScreenTwo" component={ScreenTwo} />
+        <Stack.Screen name="ScreenTwo" component={ScreenTwo} />
         <Stack.Screen name="ScreenThree" component={ScreenThree} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="TextEditor" component={TextEditorScreen} />

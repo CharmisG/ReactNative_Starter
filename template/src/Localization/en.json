@@ -39,6 +39,11 @@
     "Spanish": "Spanish",
     "TextEditor": "Text Editor",
     "Loading": "Loading",
-    "No data available": "No data available"
+    "No data available": "No data available",
+    "New Version Available": "New Version Available",
+    "Current Version": "Current Version",
+    "Latest Version": "Latest Version",
+    "Update Now": "Update Now",
+    "Later": "Later"
   }
 }
