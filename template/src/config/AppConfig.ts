@@ -84,6 +84,14 @@ export const FeatureFlags = {
         showDialogAutomatically: true,
     },
 
+    // Error handling layer
+    errorHandling: {
+        enabled: true,           // master toggle for centralized error handling/logging
+        logToFile: false,        // log errors to file (requires file logger enabled)
+        logToExternal: false,    // send HIGH/CRITICAL errors to external service
+        captureConsole: true,    // capture console errors
+    },
+
     // Offline mode
     offlineMode: {
         enabled: true,
@@ -102,12 +110,56 @@ export const FeatureFlags = {
         google: true,
         facebook: true,
         apple: true,
+        biometric: true,        // Enable biometric authentication (Face ID, Touch ID, Fingerprint)
+    },
+
+    // Biometric authentication
+    biometric: {
+        enabled: true,              // master toggle for biometric authentication
+        allowDeviceCredentials: true, // Allow device PIN/pattern as fallback
+        promptMessage: 'Authenticate to login', // Custom prompt message
+        cancelButtonText: 'Cancel',  // Cancel button text
+        showPrompt: true,            // Show system biometric prompt
+        saveCredentials: true,       // Save credentials for biometric login
     },
 
     // Media pickers on settings screen
     mediaPicker: {
         camera: true,
         gallery: true,
+    },
+
+    // Settings screen features
+    settingsScreen: {
+        showCurrencyExample: false,  // Show currency formatting example card
+        showDateTimeExample: false,  // Show date/time formatting example card
+        showUnitsExample: false,     // Show units & measurements example card
+        showSocialShare: true,       // Show social sharing button
+        dateTimeExample: {
+            showCurrentDateTime: true,    // Show current date & time section
+            showDateFormats: true,        // Show date formats section (short, medium, long, full)
+            showTimeFormats: true,        // Show time formats section (12-hour, 24-hour)
+            showRelativeTime: true,      // Show relative time examples
+            showAppInstalledRelative: true, // Show app installed relative time
+        },
+        showLastVersionCheck: true,  // Show last version check timestamp
+    },
+
+    // Social sharing
+    socialShare: {
+        enabled: true,              // master toggle for social sharing
+        shareAppName: true,         // Include app name in share message
+        shareAppStoreLinks: true,   // Include app store links in share
+        shareMessage: 'Check out this amazing app!', // Default share message
+        shareTitle: 'Share App',   // Share dialog title
+        platforms: {
+            whatsapp: true,         // Enable WhatsApp sharing
+            facebook: true,         // Enable Facebook sharing
+            twitter: true,          // Enable Twitter/X sharing
+            email: true,            // Enable Email sharing
+            sms: true,              // Enable SMS sharing
+            clipboard: true,        // Enable copy to clipboard
+        },
     },
 
     // Localization / i18n

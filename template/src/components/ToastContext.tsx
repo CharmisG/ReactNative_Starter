@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, ImageSourcePropType } from 'react-native';
-import ToastItem from '../components/Toast';
+import ToastItem from './Toast';
 import { windowWidth } from '../styles/Dimens';
 import Colors from '../styles/Colors';
 

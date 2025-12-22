@@ -2,6 +2,7 @@ import axios from 'axios';
 import { UrlConstants } from '../config/AppConfig';
 import ApiLogModel from '../models/ApiLogModel';
 import ApiResponse from '../models/ApiResponseModel';
+import { formatTimeOnly } from '../utils/DateFormatter';
 
 const showLogs = false;
 
@@ -11,7 +12,7 @@ export async function getData(url: string, authToken: string) {
   });
   let response: any;
   let apiLogModel = new ApiLogModel();
-  apiLogModel.callTime = new Date().toLocaleTimeString();
+  apiLogModel.callTime = formatTimeOnly(new Date());
   apiLogModel.requestMethod = 'GET';
   apiLogModel.url = `${axiosInstance.defaults.baseURL}/${url}`;
   try {
@@ -52,7 +53,7 @@ export async function sendData(
   });
   let response = new ApiResponse();
   let apiLogModel = new ApiLogModel();
-  apiLogModel.callTime = new Date().toLocaleTimeString();
+  apiLogModel.callTime = formatTimeOnly(new Date());
   apiLogModel.requestMethod = 'POST';
   apiLogModel.url = `${axiosInstance.defaults.baseURL}/${url}`;
   apiLogModel.payload = payload;
@@ -90,7 +91,7 @@ export async function updateData(
   });
   let response = new ApiResponse();
   let apiLogModel = new ApiLogModel();
-  apiLogModel.callTime = new Date().toLocaleTimeString();
+  apiLogModel.callTime = formatTimeOnly(new Date());
   apiLogModel.requestMethod = 'POST';
   apiLogModel.url = `${axiosInstance.defaults.baseURL}/${url}`;
   apiLogModel.payload = payload;
@@ -123,7 +124,7 @@ export async function deleteData(url: string, authToken: string, payload: any) {
   });
   let response;
   let apiLogModel = new ApiLogModel();
-  apiLogModel.callTime = new Date().toLocaleTimeString();
+  apiLogModel.callTime = formatTimeOnly(new Date());
   apiLogModel.requestMethod = 'DELETE';
   apiLogModel.url = `${axiosInstance.defaults.baseURL}/${url}`;
   axiosInstance.defaults.headers.common['auth'] = authToken;

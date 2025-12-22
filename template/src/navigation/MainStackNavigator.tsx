@@ -15,7 +15,7 @@ import { RootStackParamList } from './NavParamTypes';
 import React, { useEffect, useState } from 'react';
 import { AppConstants } from '../constants/AppConstants';
 import TextEditorScreen from '../screens/TextEditorScreen';
-import LoginScreen from '../components/socialLogin';
+import LoginScreen from '../screens/LoginScreen';
 import { AuthProvider, AuthContext } from '../hooks/AuthContext';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

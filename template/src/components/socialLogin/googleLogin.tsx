@@ -15,8 +15,14 @@ import { AuthContext } from '../../hooks/AuthContext';
 import Colors from '../../styles/Colors';
 import Translate from '../../hooks/Translate';
 import { AuthConfig } from '../../config/AppConfig';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigation/NavParamTypes';
 
-export default function GoogleSigninSampleApp({ navigation }): React.JSX.Element {
+interface GoogleSigninSampleAppProps {
+    navigation: NativeStackNavigationProp<RootStackParamList, 'Login'>;
+}
+
+export default function GoogleSigninSampleApp({ navigation }: GoogleSigninSampleAppProps): React.JSX.Element {
     const { login } = useContext(AuthContext);
 
     const configureGoogleSignIn = () => {
