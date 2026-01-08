@@ -8,6 +8,7 @@ import { PasswordInput } from '../components/socialLogin/PasswordInput';
 import { SocialLoginSection } from '../components/socialLogin/SocialLoginSection';
 import { BiometricButton } from '../components/socialLogin/BiometricButton';
 import { LoginScreenStyles } from '../components/socialLogin/styles';
+import Translate from '../hooks/Translate';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -29,7 +30,7 @@ function LoginScreen({ navigation }: Props): React.JSX.Element {
     } = useLoginScreen({ navigation });
 
     const buttonText = useMemo(
-        () => (isLoading ? 'Logging in...' : 'Login with Email'),
+        () => (isLoading ? Translate('Logging in...') : Translate('Login with Email')),
         [isLoading]
     );
 
@@ -39,8 +40,8 @@ function LoginScreen({ navigation }: Props): React.JSX.Element {
 
     return (
         <View style={LoginScreenStyles.container}>
-            <Text style={LoginScreenStyles.title}>Welcome Back</Text>
-            <Text style={LoginScreenStyles.subtitle}>Login to continue</Text>
+            <Text style={LoginScreenStyles.title}>{Translate('Welcome Back')}</Text>
+            <Text style={LoginScreenStyles.subtitle}>{Translate('Login to continue')}</Text>
 
             <View style={LoginScreenStyles.card}>
                 {showBiometricButton && (
@@ -55,7 +56,7 @@ function LoginScreen({ navigation }: Props): React.JSX.Element {
                 {showBiometricButton && (
                     <View style={LoginScreenStyles.dividerContainer}>
                         <View style={LoginScreenStyles.dividerLine} />
-                        <Text style={LoginScreenStyles.dividerText}>OR</Text>
+                        <Text style={LoginScreenStyles.dividerText}>{Translate('OR')}</Text>
                         <View style={LoginScreenStyles.dividerLine} />
                     </View>
                 )}

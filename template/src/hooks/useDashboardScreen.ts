@@ -11,12 +11,13 @@ import { Animated, Easing } from 'react-native';
 import Translate from './Translate';
 import Images from '../utils/Images';
 import { errorHandler } from '../utils/errors';
+import { FeatureFlags } from '../config/AppConfig';
 
 export const useDashboardScreen = (navigation: any) => {
     const dispatch = useDispatch<AppDispatch>();
     const { sampleData, isLoading, error } = useSelector((state: RootState) => state.Home);
     const { appTheme } = useSelector((state: RootState) => state.Settings);
-	const { loginType, setLoginType } = useContext(AuthContext);
+    const { loginType, setLoginType } = useContext(AuthContext);
 
     const [visible, setVisible] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
@@ -53,28 +54,75 @@ export const useDashboardScreen = (navigation: any) => {
     }, [loginType, setLoginType, navigation]);
 
     const menuOptions = useMemo(
-        () => [
-            {
-                title: Translate('Settings'),
-                icon: Images.settings,
-                action: () => {
-                    analyticsTest();
-                    navigation.getParent()?.navigate('Settings');
+        () => {
+            const options = [
+                {
+                    title: Translate('Settings'),
+                    icon: Images.settings,
+                    action: () => {
+                        analyticsTest();
+                        navigation.getParent()?.navigate('Settings');
+                    },
                 },
-            },
-            {
-                title: Translate('TextEditor'),
-                icon: Images.settings,
-                action: () => {
-                    navigation.getParent()?.navigate('TextEditor');
+                {
+                    title: Translate('TextEditor'),
+                    icon: Images.settings,
+                    action: () => {
+                        navigation.getParent()?.navigate('TextEditor');
+                    },
                 },
-            },
-            {
+            ];
+
+            // Add QR Scanner option
+            options.push({
+                title: Translate('QR Scanner'),
+                icon: Images.settings, // Using settings icon as placeholder, you can add a QR icon to Images.ts
+                action: () => {
+                    navigation.getParent()?.navigate('QRScanner');
+                },
+            });
+
+            // Add Maps option if enabled via FeatureFlags
+            if (FeatureFlags.maps?.enabled && FeatureFlags.maps?.showDashboardIcon) {
+                options.push({
+                    title: Translate('Maps'),
+                    icon: Images.settings, // Using settings icon as placeholder, you can add a maps icon to Images.ts
+                    action: () => {
+                        navigation.getParent()?.navigate('Maps');
+                    },
+                });
+            }
+
+            // Add Media Viewer option if enabled via FeatureFlags
+            if (FeatureFlags.mediaViewer?.enabled && FeatureFlags.mediaViewer?.showDashboardIcon) {
+                options.push({
+                    title: Translate('Media Viewer'),
+                    icon: Images.settings, // Using settings icon as placeholder
+                    action: () => {
+                        navigation.getParent()?.navigate('MediaViewer');
+                    },
+                });
+            }
+
+            // Add Accessibility option if enabled via FeatureFlags
+            if (FeatureFlags.accessibility?.enabled && FeatureFlags.accessibility?.showDashboardIcon) {
+                options.push({
+                    title: Translate('Accessibility'),
+                    icon: Images.settings, // Using settings icon as placeholder
+                    action: () => {
+                        navigation.getParent()?.navigate('Accessibility');
+                    },
+                });
+            }
+
+            options.push({
                 title: Translate('Logout'),
                 icon: Images.logout,
                 action: handleLogout,
-            },
-        ],
+            });
+
+            return options;
+        },
         [analyticsTest, handleLogout, navigation]
     );
 
@@ -115,15 +163,19 @@ export const useDashboardScreen = (navigation: any) => {
     }, [navigation]);
 
     useEffect(() => {
-        const loadData = async () => {
-            try {
-                await dispatch(HomeSliceActions.getSampleDataAction());
-            } catch (error) {
-                errorHandler.handleError(error, { source: 'DashboardScreen', action: 'initial_load' });
-            }
-        };
-        loadData();
+        // Load data on mount
+        dispatch(HomeSliceActions.getSampleDataAction());
     }, [dispatch]);
+
+    // Log errors when they occur in Redux state
+    useEffect(() => {
+        if (error) {
+            errorHandler.handleError(
+                new Error(error),
+                { source: 'DashboardScreen', action: 'initial_load' }
+            );
+        }
+    }, [error]);
 
     const filteredOptions = useMemo(() => {
         return menuOptions.filter(

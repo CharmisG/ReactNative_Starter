@@ -2,47 +2,32 @@ import React from 'react';
 import { Pressable, Text, View, ActivityIndicator } from 'react-native';
 import Translate from '../../hooks/Translate';
 import { styles } from './SettingsCardStyles';
+import Colors from '../../styles/Colors';
 
 interface ShareButtonProps {
     onPress: () => void;
     isLoading?: boolean;
-    themeColors: {
-        cardBg: string;
-        textColor: string;
-        accentColor: string;
-    };
 }
 
 export const ShareButton = React.memo<ShareButtonProps>(({
     onPress,
     isLoading = false,
-    themeColors,
 }) => (
     <Pressable
         style={({ pressed }) => [
-            styles.card,
-            { backgroundColor: themeColors.cardBg },
+            styles.commonStyles,
+            styles.libraryButton, // accent background like other action buttons
             pressed && styles.buttonPressedEffect,
         ]}
         onPress={onPress}
         disabled={isLoading}
     >
         <View style={styles.rowBetween}>
-            <View style={styles.flexRow}>
-                <Text style={styles.shareIcon}>📤</Text>
-                <View style={styles.shareTextContainer}>
-                    <Text style={[styles.cardTitle, { color: themeColors.textColor }]}>
-                        {Translate('Share App')}
-                    </Text>
-                    <Text style={[styles.cardSubtitle, { color: themeColors.accentColor }]}>
-                        {Translate('Share with friends')}
-                    </Text>
-                </View>
-            </View>
+            <Text style={styles.buttonText}>{Translate('Share App')}</Text>
             {isLoading ? (
-                <ActivityIndicator size="small" color={themeColors.accentColor} />
+                <ActivityIndicator size="small" color={Colors.white} />
             ) : (
-                <Text style={[styles.shareArrow, { color: themeColors.accentColor }]}>›</Text>
+                <Text style={styles.buttonText}>{Translate('Share')}</Text>
             )}
         </View>
     </Pressable>

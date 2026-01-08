@@ -8,4 +8,8 @@ export type RootStackParamList = {
     Settings: undefined;
     TextEditor: undefined;
     ProfileScreen: undefined;
+    QRScanner: undefined;
+    Maps: undefined;
+    MediaViewer: undefined;
+    Accessibility: undefined;
 }

@@ -16,8 +16,7 @@ class MainActivity : ReactActivity() {
   override fun getMainComponentName(): String = "ProjectName"
 
   override fun onCreate(savedInstanceState: Bundle?) {
-//        SplashScreen.show(this);  // add this
-        super.onCreate(null)
+        super.onCreate(savedInstanceState)
     }
 
   /**

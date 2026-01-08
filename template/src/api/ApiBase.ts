@@ -21,15 +21,19 @@ export async function getData(url: string, authToken: string) {
     response = await axiosInstance.get(url);
     apiLogModel.status = response.status;
     apiLogModel.data = response.data;
-
   } catch (error) {
     apiLogModel.error = error;
-  } finally {
     if (showLogs) {
       console.log('API LOG', apiLogModel);
     }
-    return response;
+    // Re-throw the error so it can be properly handled by Redux thunks and error handlers
+    throw error;
   }
+  
+  if (showLogs) {
+    console.log('API LOG', apiLogModel);
+  }
+  return response;
 }
 
 export async function getDataById(url: string, authToken: string, id: string) {
@@ -37,9 +41,10 @@ export async function getDataById(url: string, authToken: string, id: string) {
   try {
     response = await axios.get(`${UrlConstants.baseUrl}/${url}/${id}`);
   } catch (error) {
-  } finally {
-    return response;
+    // Re-throw the error so it can be properly handled
+    throw error;
   }
+  return response;
 }
 
 export async function sendData(
@@ -72,12 +77,17 @@ export async function sendData(
   } catch (error) {
     response.error = error;
     apiLogModel.error = error;
-  } finally {
     if (showLogs) {
       console.log('API LOG', apiLogModel);
     }
-    return response;
+    // Re-throw the error so it can be properly handled
+    throw error;
   }
+  
+  if (showLogs) {
+    console.log('API LOG', apiLogModel);
+  }
+  return response;
 }
 
 export async function updateData(
@@ -110,12 +120,17 @@ export async function updateData(
   } catch (error) {
     response.error = error;
     apiLogModel.error = error;
-  } finally {
     if (showLogs) {
       console.log('API LOG', apiLogModel);
     }
-    return response;
+    // Re-throw the error so it can be properly handled
+    throw error;
   }
+  
+  if (showLogs) {
+    console.log('API LOG', apiLogModel);
+  }
+  return response;
 }
 
 export async function deleteData(url: string, authToken: string, payload: any) {
@@ -134,10 +149,15 @@ export async function deleteData(url: string, authToken: string, payload: any) {
     apiLogModel.data = response.data;
   } catch (error) {
     apiLogModel.error = error;
-  } finally {
     if (showLogs) {
       console.log('API LOG', apiLogModel);
     }
-    return response;
+    // Re-throw the error so it can be properly handled
+    throw error;
   }
+  
+  if (showLogs) {
+    console.log('API LOG', apiLogModel);
+  }
+  return response;
 }

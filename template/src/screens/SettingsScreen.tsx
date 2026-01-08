@@ -36,6 +36,8 @@ const SettingsScreen = ({ navigation }: Props) => {
     onCaptureImageWithCamera,
     onShareApp,
     isSharing,
+    onSendNotification,
+    isNotificationLoading,
   } = useSettingsScreen();
 
   useEffect(() => {
@@ -71,6 +73,8 @@ const SettingsScreen = ({ navigation }: Props) => {
           onCaptureImageWithCamera={onCaptureImageWithCamera}
           onShareApp={onShareApp}
           isSharing={isSharing}
+          onSendNotification={onSendNotification}
+          isNotificationLoading={isNotificationLoading}
         />
       </ScrollView>
     </MainView>

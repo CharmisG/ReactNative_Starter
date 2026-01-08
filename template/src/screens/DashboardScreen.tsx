@@ -112,7 +112,10 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={DashboardStyles.container}>
       <SafeAreaView style={DashboardStyles.topHalf}>
-        <Pressable onPress={() => resizeBox(1)}>
+        <Pressable
+          accessibilityLabel={Translate('Open menu')}
+          accessibilityRole="button"
+          onPress={() => resizeBox(1)}>
           <Image source={Images.hamburger} style={DashboardStyles.hamburgerIcon} />
         </Pressable>
 
@@ -127,7 +130,10 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
         </Modal>
 
         <View style={DashboardStyles.headerContainer}>
-          <Text style={DashboardStyles.headerText}>
+          <Text
+            accessibilityLabel={Translate('Hello')}
+            accessibilityRole="text"
+            style={DashboardStyles.headerText}>
             {Translate('Hello')} 👋
           </Text>
         </View>

@@ -16,6 +16,8 @@ import { Alert } from 'react-native';
 import i18n from '../Localization/Localize';
 import Translate from './Translate';
 import Colors from '../styles/Colors';
+import { useSocialShare } from './useSocialShare';
+import { useNotifications } from './useNotifications';
 
 declare global {
   var appLanguage: string | undefined;
@@ -34,6 +36,7 @@ export const useSettingsScreen = () => {
   const [appInstalledDate, setAppInstalledDate] = useState<Date | null>(null);
 
   const { share, showShareOptions, isSharing } = useSocialShare();
+  const { sendTestNotification, isLoading: isNotificationLoading } = useNotifications();
 
   const localizationConfig = FeatureFlags.localization;
   const supportedLanguages = (localizationConfig?.supportedLanguages ?? []) as string[];
@@ -195,6 +198,8 @@ export const useSettingsScreen = () => {
     onCaptureImageWithCamera,
     onShareApp,
     isSharing,
+    onSendNotification: sendTestNotification,
+    isNotificationLoading,
   };
 };
 

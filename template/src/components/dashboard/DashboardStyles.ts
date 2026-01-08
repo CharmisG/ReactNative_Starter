@@ -27,9 +27,9 @@ export const DashboardStyles = StyleSheet.create({
         color: Colors.white,
     },
     hamburgerIcon: {
-        marginLeft: 10,
-        height: 24,
-        width: 24,
+        margin: windowHeight(15),
+        height: windowHeight(20),
+        width: windowWidth(30),
         tintColor: Colors.black,
         alignSelf: 'flex-start',
     },

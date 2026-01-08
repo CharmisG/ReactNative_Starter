@@ -5,6 +5,7 @@
 #import <SafariServices/SafariServices.h>
 #import <FBSDKCoreKit/FBSDKCoreKit-Swift.h>
 #import <GoogleSignIn/GoogleSignIn.h>
+#import "RNSplashScreen.h"
 
 @implementation AppDelegate
 
@@ -18,6 +19,9 @@
   [FIRApp configure];
   [[FBSDKApplicationDelegate sharedInstance] application:application
                            didFinishLaunchingWithOptions:launchOptions];
+  if (ret) {
+    [RNSplashScreen show];
+  }
   return ret;
   // return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }

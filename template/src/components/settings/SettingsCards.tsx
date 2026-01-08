@@ -31,6 +31,8 @@ type SettingsCardsProps = {
     onCaptureImageWithCamera: () => void;
     onShareApp: () => void;
     isSharing: boolean;
+    onSendNotification: () => void;
+    isNotificationLoading: boolean;
 };
 
 export const SettingsCards = ({
@@ -55,6 +57,8 @@ export const SettingsCards = ({
     onCaptureImageWithCamera,
     onShareApp,
     isSharing,
+    onSendNotification,
+    isNotificationLoading,
 }: SettingsCardsProps) => (
     <>
         {localizationEnabled && (
@@ -110,13 +114,19 @@ export const SettingsCards = ({
             { onPress: onAnalyticsTest, text: Translate('Test Analytics') },
             { onPress: onShowToast, text: Translate('Show Toast') },
             { onPress: onCheckAppVersion, text: Translate('Check for Updates') },
+            ...(FeatureFlags.notifications?.enabled && FeatureFlags.notifications?.features?.sending
+                ? [{ onPress: onSendNotification, text: Translate('Send Notification'), isLoading: isNotificationLoading }]
+                : []),
         ].map((btn, idx) => (
             <Pressable
                 key={idx}
                 style={({ pressed }) => [styles.commonStyles, styles.crashButton, pressed && styles.buttonPressedEffect]}
                 onPress={btn.onPress}
+                disabled={btn.isLoading}
             >
-                <Text style={styles.buttonText}>{btn.text}</Text>
+                <Text style={styles.buttonText}>
+                    {btn.isLoading ? Translate('Sending...') : btn.text}
+                </Text>
             </Pressable>
         ))}
 
@@ -138,7 +148,6 @@ export const SettingsCards = ({
             <ShareButton
                 onPress={onShareApp}
                 isLoading={isSharing}
-                themeColors={themeColors}
             />
         )}
 

@@ -83,6 +83,24 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        missingDimensionStrategy 'react-native-camera', 'general'
+    }
+    
+    packaging {
+        pickFirsts += ['lib/x86/libc++_shared.so', 'lib/x86_64/libc++_shared.so', 'lib/armeabi-v7a/libc++_shared.so', 'lib/arm64-v8a/libc++_shared.so']
+    }
+    
+    configurations.all {
+        resolutionStrategy {
+            force 'androidx.core:core-ktx:1.12.0'
+            // Force compatible Google Play Services versions
+            // Updated to 18.3.0 to include OptionalModuleApi required by ML Kit
+            // This should still be compatible with react-native-geolocation-service
+            force 'com.google.android.gms:play-services-base:18.3.0'
+            force 'com.google.android.gms:play-services-location:18.0.0'
+            force 'com.google.android.gms:play-services-maps:18.0.0'
+            force 'com.google.android.gms:play-services-tasks:18.0.0'
+        }
     }
     signingConfigs {
         debug {
@@ -116,6 +134,16 @@ dependencies {
     implementation 'androidx.core:core:1.12.0'
     implementation 'androidx.core:core-ktx:1.12.0'
     
+    // Google Play Services for Maps and Location
+    // Updated to 18.3.0 for play-services-base to include OptionalModuleApi (required by ML Kit)
+    // Other services remain at 18.0.0 for compatibility
+    implementation 'com.google.android.gms:play-services-base:18.3.0'
+    implementation 'com.google.android.gms:play-services-maps:18.0.0'
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
+    implementation 'com.google.android.gms:play-services-tasks:18.0.0'
+    
+    // ML Kit Barcode Scanning - automatically included by @react-native-ml-kit/barcode-scanning
+    // The play-services-base:18.3.0 above provides OptionalModuleApi
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

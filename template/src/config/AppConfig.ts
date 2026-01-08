@@ -164,10 +164,106 @@ export const FeatureFlags = {
 
     // Localization / i18n
     localization: {
-        enabled: false,              // master toggle for i18n
+        enabled: true,              // master toggle for i18n
         defaultLanguage: 'en',      // fallback language code
         supportedLanguages: ['en', 'es'], // list of supported language codes
         autoDetectDevice: true,     // try device locale on startup when supported
+    },
+
+    // Bluetooth Low Energy (BLE)
+    bluetooth: {
+        enabled: true,              // master toggle for BLE functionality
+        autoStart: true,            // automatically start BLE manager on screen mount
+        showAlert: false,           // show native alert when starting BLE manager
+        scanDuration: 5,            // default scan duration in seconds
+        requestPermissions: true,   // automatically request Bluetooth permissions
+        features: {
+            scanning: true,         // Enable BLE scanning
+            connecting: true,       // Enable connecting to peripherals
+            disconnecting: true,    // Enable disconnecting from peripherals
+            stateMonitoring: true,  // Monitor Bluetooth state changes
+        },
+    },
+
+    // WiFi functionality
+    wifi: {
+        enabled: true,              // master toggle for WiFi functionality
+        autoScan: false,            // automatically scan for networks on screen mount
+        scanInterval: 10,           // scan interval in seconds (if autoScan is enabled)
+        requestPermissions: true,   // automatically request location permissions (required for WiFi scanning on Android)
+        features: {
+            scanning: true,         // Enable WiFi network scanning
+            connecting: true,       // Enable connecting to WiFi networks
+            disconnecting: true,    // Enable disconnecting from WiFi networks
+            stateMonitoring: true,  // Monitor WiFi connection state
+            networkInfo: true,      // Show current network information
+        },
+    },
+
+    // Splash Screen
+    splashScreen: {
+        enabled: true,              // master toggle for splash screen functionality
+        autoHide: true,             // automatically hide splash screen when app is initialized
+        minimumDisplayTime: 0,      // minimum time to display splash screen in milliseconds (0 = no minimum)
+    },
+
+    // Maps & Location
+    maps: {
+        enabled: true,              // master toggle for maps functionality
+        requestPermissions: true,   // automatically request location permissions
+        showDashboardIcon: true,    // show Maps option in dashboard navigation menu
+        trackLocation: true,         // enable real-time location tracking
+        updateInterval: 1000,       // location update interval in milliseconds (1000 = 1 second)
+        showCurrentLocation: true,   // show current location marker on map
+        followUserLocation: true,    // automatically center map on user location
+        showLocationInfo: true,      // display latitude and longitude information
+        useOpenStreetMap: true,     // use OpenStreetMap instead of Google Maps (Android: OpenStreetMap, iOS: Apple Maps)
+    },
+
+    // Media Viewer
+    mediaViewer: {
+        enabled: true,              // master toggle for media viewer functionality
+        showDashboardIcon: true,    // show Media Viewer option in dashboard navigation menu
+        videoPlayer: {
+            enabled: true,          // enable video player
+            autoplay: false,       // autoplay videos
+            controls: true,         // show video controls
+            loop: false,            // loop videos
+        },
+        imageViewer: {
+            enabled: true,          // enable image viewer
+            zoomEnabled: true,      // enable pinch to zoom
+            allowGallerySelection: true, // allow selecting images from gallery
+        },
+        documentViewer: {
+            enabled: true,          // enable document/PDF viewer
+            supportedFormats: ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'], // supported file formats
+            allowFileSelection: true, // allow selecting files from device
+        },
+    },
+
+    // Accessibility features
+    accessibility: {
+        enabled: true,              // master toggle for accessibility functionality
+        showDashboardIcon: true,    // show Accessibility option in dashboard navigation menu
+        screenReaderSupport: true,  // enable screen reader specific enhancements
+        largeTextSupport: true,     // enable large text enhancements
+        minimumTouchTargetSize: 48, // minimum touch target size in dp
+        highContrastMode: true,    // enable high contrast mode
+        fontScaling: true,          // enable font scaling
+        voiceControl: true,         // enable voice control features
+    },
+
+    // Notifications
+    notifications: {
+        enabled: true,              // master toggle for notification functionality
+        requestPermissions: true,   // automatically request notification permissions
+        features: {
+            sending: true,          // Enable sending notifications
+            scheduling: true,        // Enable scheduling notifications
+            canceling: true,         // Enable canceling notifications
+            permissionChecking: true, // Enable permission checking
+        },
     },
 };
 

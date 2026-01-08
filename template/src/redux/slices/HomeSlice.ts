@@ -31,18 +31,28 @@ const HomeSlice = createSlice({
       state.error = null;
     });
     builder.addCase(getSampleDataAction.fulfilled, (state, action) => {
-      let sampleList = [];
-      for (var item of action.payload.data) {
-        var sampleModel = new SampleModel();
-        sampleModel.id = item?.id;
-        sampleModel.userId = item?.userId;
-        sampleModel.title = item?.title;
-        sampleModel.completed = item?.completed;
-        sampleList.push(sampleModel);
+      try {
+        let sampleList = [];
+        // Handle cases where payload or payload.data might be undefined
+        if (action.payload && action.payload.data && Array.isArray(action.payload.data)) {
+          for (var item of action.payload.data) {
+            var sampleModel = new SampleModel();
+            sampleModel.id = item?.id;
+            sampleModel.userId = item?.userId;
+            sampleModel.title = item?.title;
+            sampleModel.completed = item?.completed;
+            sampleList.push(sampleModel);
+          }
+        }
+        state.sampleData = [...sampleList];
+        state.isLoading = false;
+        state.error = null;
+      } catch (error) {
+        // If there's an error processing the payload, set error state
+        state.isLoading = false;
+        state.error = 'Failed to process data';
+        state.sampleData = [];
       }
-      state.sampleData = [...sampleList];
-      state.isLoading = false;
-      state.error = null;
     });
     builder.addCase(getSampleDataAction.rejected, (state, action) => {
       state.isLoading = false;

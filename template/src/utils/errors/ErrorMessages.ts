@@ -3,6 +3,7 @@ import Translate from '../../hooks/Translate';
 
 /**
  * Error message keys for localization
+ * These keys match the translation keys in en.json and es.json
  */
 const ErrorMessageKeys: Record<ErrorCode, string> = {
     // Network Errors

@@ -16,6 +16,10 @@ import React, { useEffect, useState } from 'react';
 import { AppConstants } from '../constants/AppConstants';
 import TextEditorScreen from '../screens/TextEditorScreen';
 import LoginScreen from '../screens/LoginScreen';
+import QRScannerScreen from '../screens/QRScannerScreen';
+import MapsScreen from '../screens/MapsScreen';
+import MediaViewerScreen from '../screens/MediaViewerScreen';
+import AccessibilityScreen from '../screens/AccessibilityScreen';
 import { AuthProvider, AuthContext } from '../hooks/AuthContext';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -46,12 +50,16 @@ export default function MainStackNavigator(): React.JSX.Element {
           headerShown: false,
           gestureEnabled: false,
         }}>
-        <Stack.Screen name="Login" component={LoginScreen} />
+        {/* <Stack.Screen name="Login" component={LoginScreen} /> */}
         <Stack.Screen name="Tabs" component={MainTabNavigator} />
         <Stack.Screen name="ScreenTwo" component={ScreenTwo} />
         <Stack.Screen name="ScreenThree" component={ScreenThree} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="TextEditor" component={TextEditorScreen} />
+        <Stack.Screen name="QRScanner" component={QRScannerScreen} />
+        <Stack.Screen name="Maps" component={MapsScreen} />
+        <Stack.Screen name="MediaViewer" component={MediaViewerScreen} />
+        <Stack.Screen name="Accessibility" component={AccessibilityScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
