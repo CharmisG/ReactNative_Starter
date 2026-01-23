@@ -1,11 +1,12 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import { AppConstants } from '../../constants/AppConstants';
 
 interface SampleState {
-  appTheme: any;
+  appTheme: string;
 }
 
 const initialState: SampleState = {
-  appTheme: '',
+  appTheme: AppConstants.light,
 };
 
 const SettingsSlice = createSlice({
@@ -18,6 +19,6 @@ const SettingsSlice = createSlice({
   },
 });
 
-export const SettingsSliceActions = {...SettingsSlice.actions};
+export const SettingsSliceActions = { ...SettingsSlice.actions };
 export const setAppTheme = SettingsSlice.actions.setAppTheme;
 export default SettingsSlice.reducer;

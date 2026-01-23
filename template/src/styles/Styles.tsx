@@ -1,29 +1,31 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import Colors from './Colors';
-import {fontHeight} from './Fonts';
+import { fontHeight } from './Fonts';
+import { windowHeight } from './Dimens';
 
 const Styles = StyleSheet.create({
   mainNavbar: {
     backgroundColor: Colors.primary,
-    height: 44,
+    height: windowHeight(44),
     flexDirection: 'row',
     width: '100%',
-    paddingHorizontal: 6,
-    paddingVertical: 4,
+    paddingHorizontal: windowHeight(6),
+    paddingVertical: windowHeight(4),
   },
   navBarTitle: {
     color: Colors.white,
-    fontSize: fontHeight.FONT14,
+    fontSize: fontHeight.FONT15,
     textAlign: 'center',
   },
   navBarIcon: {
     color: Colors.white,
-    height: 24,
-    width: 24,
+    height: windowHeight(18),
+    width: windowHeight(18),
+    margin: windowHeight(8)
   },
   mainViewContainer: {
     backgroundColor: Colors.white,
-    padding: 8,
+    padding: windowHeight(8),
   },
 });
 

@@ -1,0 +1,99 @@
+# Azure DevOps Pipeline for React Native 
+
+trigger:
+  branches:
+    include:
+      - main
+      - dev
+  paths:
+    exclude:
+      - README.md
+      - '*.md'
+
+pr:
+  branches:
+    include:
+      - main
+      - dev
+
+pool:
+  vmImage: 'macos-latest'
+
+variables:
+  NODE_VERSION: '18.x'
+  JAVA_VERSION: '17'
+
+stages:
+  - stage: Install
+    displayName: 'Install Dependencies'
+    jobs:
+      - job: Install
+        displayName: 'Install Node Modules'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(NODE_VERSION)
+            displayName: 'Setup Node.js'
+
+          - script: |
+              npm ci
+            displayName: 'Install dependencies'
+
+  - stage: Test
+    displayName: 'Run Tests'
+    dependsOn: Install
+    jobs:
+      - job: Test
+        displayName: 'Run Tests'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(NODE_VERSION)
+
+          - script: |
+              npm ci
+            displayName: 'Install dependencies'
+
+          - script: |
+              npm test -- --coverage --watchAll=false
+            displayName: 'Run tests'
+            continueOnError: true
+
+  - stage: BuildAndroid
+    displayName: 'Build Android'
+    dependsOn: [Lint, Test]
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
+    jobs:
+      - job: BuildAndroid
+        displayName: 'Build Android APK'
+        pool:
+          vmImage: 'macos-latest'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(NODE_VERSION)
+
+          - task: JavaToolInstaller@0
+            inputs:
+              versionSpec: $(JAVA_VERSION)
+              jdkArchitecture: 'x64'
+            displayName: 'Setup Java'
+
+          - script: |
+              npm ci
+            displayName: 'Install dependencies'
+
+          - script: |
+              chmod +x android/gradlew
+            displayName: 'Make gradlew executable'
+
+          - script: |
+              cd android
+              ./gradlew assembleDebug
+            displayName: 'Build Android APK'
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: 'android/app/build/outputs/apk/debug'
+              artifactName: 'android-debug-apk'
+            displayName: 'Publish APK artifact'

@@ -1,7 +1,11 @@
 #import "AppDelegate.h"
-#import "RNSplashScreen.h"
-
 #import <React/RCTBundleURLProvider.h>
+#import <Firebase.h>
+#import <AuthenticationServices/AuthenticationServices.h>
+#import <SafariServices/SafariServices.h>
+#import <FBSDKCoreKit/FBSDKCoreKit-Swift.h>
+#import <GoogleSignIn/GoogleSignIn.h>
+#import "RNSplashScreen.h"
 
 @implementation AppDelegate
 
@@ -12,10 +16,12 @@
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
   BOOL ret = [super application:application didFinishLaunchingWithOptions:launchOptions];
-    if (ret == YES)
-    {
-      [RNSplashScreen show];
-    }
+  [FIRApp configure];
+  [[FBSDKApplicationDelegate sharedInstance] application:application
+                           didFinishLaunchingWithOptions:launchOptions];
+  if (ret) {
+    [RNSplashScreen show];
+  }
   return ret;
   // return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }

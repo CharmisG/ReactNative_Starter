@@ -1,10 +1,11 @@
-package com.projectname
+package com.saviant.reactstarterkit
 
+import android.os.Bundle
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
-mport org.devio.rn.splashscreen.SplashScreen
+import org.devio.rn.splashscreen.SplashScreen
 
 class MainActivity : ReactActivity() {
 
@@ -15,8 +16,7 @@ class MainActivity : ReactActivity() {
   override fun getMainComponentName(): String = "ProjectName"
 
   override fun onCreate(savedInstanceState: Bundle?) {
-        SplashScreen.show(this);  // add this
-        super.onCreate(null)
+        super.onCreate(savedInstanceState)
     }
 
   /**

@@ -1,0 +1,228 @@
+import { StyleSheet } from 'react-native';
+import Colors from '../../styles/Colors';
+import { fontHeight, fontWidth } from '../../styles/Fonts';
+import { windowHeight, windowWidth } from '../../styles/Dimens';
+
+export const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+  },
+  scrollContent: {
+    paddingBottom: windowHeight(20),
+  },
+  card: {
+    width: '100%',
+    backgroundColor: Colors.white,
+    padding: 18,
+    marginVertical: 10,
+    borderRadius: 16,
+    shadowColor: Colors.black,
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 6,
+  },
+  cardTitle: {
+    color: Colors.charcoal,
+    fontSize: fontWidth.FONT22,
+    fontWeight: '700',
+    letterSpacing: 0.4,
+    marginBottom: 10,
+  },
+  cardSubtitle: {
+    color: Colors.accent,
+    fontSize: fontHeight.FONT13,
+    fontWeight: '500',
+    marginTop: 4,
+  },
+  textLink: {
+    textDecorationLine: 'underline',
+    fontWeight: '600',
+    marginTop: 6,
+  },
+  dropdown: {
+    height: windowHeight(40),
+    borderRadius: 12,
+    paddingHorizontal: windowWidth(15),
+    backgroundColor: Colors.lightGrey,
+    borderWidth: 0,
+    shadowColor: Colors.black,
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+    color: Colors.grey,
+  },
+  selectedTextStyle: {
+    fontSize: fontHeight.FONT16,
+    fontWeight: '600',
+    color: Colors.charcoal,
+  },
+  iconStyle: {
+    width: windowWidth(26),
+    height: windowHeight(26),
+    tintColor: Colors.accent,
+  },
+  rowBetween: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 16,
+    gap: 14,
+  },
+  diagButton: {
+    flex: 1,
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 4,
+    shadowColor: Colors.black,
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+  },
+  commonStyles: {
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderRadius: 12,
+    elevation: 4,
+    shadowColor: Colors.black,
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+    marginTop: windowHeight(10),
+  },
+  crashButton: {
+    backgroundColor: Colors.charcoal,
+  },
+  buttonPressedEffect: {
+    opacity: 0.85,
+    elevation: 2,
+  },
+  buttonText: {
+    color: Colors.white,
+    fontSize: fontHeight.FONT13,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  cameraButton: {
+    backgroundColor: Colors.charcoal,
+  },
+  libraryButton: {
+    backgroundColor: Colors.accent,
+  },
+  previewContainer: {
+    marginTop: 14,
+    alignItems: 'center',
+  },
+  previewImage: {
+    width: '100%',
+    height: windowHeight(200),
+    borderRadius: 12,
+  },
+  previewLabel: {
+    marginTop: 8,
+    color: Colors.charcoal,
+    fontSize: fontHeight.FONT13,
+    fontWeight: '600',
+  },
+  infoTextContainer: {
+    marginTop: 8,
+    marginHorizontal: 0,
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: Colors.lightGrey,
+  },
+  infoText: {
+    fontSize: fontHeight.FONT12,
+    fontWeight: '500',
+    textAlign: 'center',
+    color: Colors.charcoal,
+  },
+  statRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 12,
+    paddingVertical: 4,
+  },
+  statLabel: {
+    fontSize: fontHeight.FONT14,
+    fontWeight: '500',
+    color: Colors.charcoal,
+    flex: 1,
+  },
+  statValue: {
+    fontSize: fontHeight.FONT14,
+    fontWeight: '700',
+    color: Colors.charcoal,
+    textAlign: 'right',
+  },
+  flexRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  shareIcon: {
+    fontSize: fontHeight.FONT24,
+    marginRight: windowWidth(12),
+  },
+  shareButton: {
+    backgroundColor: Colors.primary,
+    paddingVertical: windowHeight(14),
+    paddingHorizontal: windowWidth(16),
+    borderRadius: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+    shadowColor: Colors.black,
+    shadowOpacity: 0.14,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 5,
+    marginVertical: 10,
+  },
+  shareTextBlock: {
+    flex: 1,
+    gap: 4,
+  },
+  shareTitle: {
+    color: Colors.white,
+    fontSize: fontHeight.FONT16,
+    fontWeight: '700',
+    letterSpacing: 0.2,
+  },
+  shareSubtitle: {
+    color: Colors.white,
+    opacity: 0.9,
+    fontSize: fontHeight.FONT12,
+    fontWeight: '500',
+  },
+  shareCTA: {
+    color: Colors.white,
+    fontSize: fontHeight.FONT14,
+    fontWeight: '700',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    backgroundColor: Colors.accent,
+    overflow: 'hidden',
+  },
+  shareTextContainer: {
+    flex: 1,
+  },
+  shareArrow: {
+    fontSize: fontHeight.FONT24,
+    fontWeight: '300',
+  },
+});
+

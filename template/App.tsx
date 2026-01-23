@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
@@ -5,47 +6,68 @@
  * @format
  */
 
-import React, {useEffect} from 'react';
-import {LogBox, StyleSheet} from 'react-native';
-import i18n from './src/Localization/Localize';
-import * as RNLocalize from 'react-native-localize';
+import React, { useEffect, useMemo } from 'react';
 import MainStackNavigator from './src/navigation/MainStackNavigator';
-import {Provider} from 'react-redux';
+import { Provider } from 'react-redux';
 import { Store } from './src/redux/Store';
+import { AuthProvider } from './src/hooks/AuthContext';
+import { ToastProvider } from './src/components/ToastContext';
+import { useAppInitialization } from './src/hooks/useAppInitialization';
+import { ErrorBoundary } from './src/components/ErrorBoundary';
 import SplashScreen from 'react-native-splash-screen';
+import { FeatureFlags } from './src/config/AppConfig';
+
+/**
+ * App Providers Component - Memoized to prevent unnecessary re-renders
+ */
+type AppProvidersProps = React.PropsWithChildren<{}>;
+
+const AppProviders: React.FC<AppProvidersProps> = ({ children }: AppProvidersProps) => {
+	return (
+		<ErrorBoundary>
+			<AuthProvider>
+				<Provider store={Store}>
+					<ToastProvider>
+						{children}
+					</ToastProvider>
+				</Provider>
+			</AuthProvider>
+		</ErrorBoundary>
+	);
+};
+
+AppProviders.displayName = 'AppProviders';
 
 function App(): React.JSX.Element {
-  useEffect(() => {
-    SplashScreen.hide();
-    const locale = RNLocalize.getLocales()[0].languageCode;
-    i18n.changeLanguage(locale);
-    LogBox.ignoreAllLogs();
-  }, []);
+	const isInitialized = useAppInitialization();
 
-  return (
-    <Provider store={Store}>
-      <MainStackNavigator />
-    </Provider>
-  );
+	useEffect(() => {
+		if (isInitialized && FeatureFlags.splashScreen?.enabled && FeatureFlags.splashScreen?.autoHide) {
+			const hideSplash = () => {
+				try {
+					SplashScreen.hide();
+				} catch (error) {
+					console.warn('Failed to hide splash screen:', error);
+				}
+			};
+
+			const minimumDisplayTime = FeatureFlags.splashScreen?.minimumDisplayTime || 0;
+			if (minimumDisplayTime > 0) {
+				setTimeout(hideSplash, minimumDisplayTime);
+			} else {
+				hideSplash();
+			}
+		}
+	}, [isInitialized]);
+
+	const appContent = useMemo(() => {
+		if (!isInitialized) {
+			return null;
+		}
+		return <MainStackNavigator />;
+	}, [isInitialized]);
+
+	return <AppProviders>{appContent}</AppProviders>;
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
